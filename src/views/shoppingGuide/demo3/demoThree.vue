@@ -1,0 +1,1791 @@
+<template>
+  <div>
+    <el-form
+      :model="ruleForm"
+      :rules="rules"
+      ref="ruleForm"
+      label-width="120px"
+      class="demo-ruleForm"
+    >
+      <el-form-item label="名称展示" class="show" prop="showName">
+        <el-checkbox v-model="ruleForm.showName" @change="isShow()">展示</el-checkbox>
+      </el-form-item>
+
+      <el-form-item label="导购名称" prop="name" class="show">
+        <el-input v-model="ruleForm.name" placeholder="请输入导购名称"></el-input>
+      </el-form-item>
+      <el-form-item label="商圈" prop="type" class="show">
+        <el-checkbox-group v-model="ruleForm.type" @change="chooseArea(ruleForm.type)">
+          <el-checkbox
+            v-for="(item,index) in areaLists"
+            :label="item.traName"
+            :key="index"
+            name="type"
+            @change="chooseArea1(item)"
+          ></el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="开始时间" required>
+        <el-col :span="11">
+          <el-form-item prop="startTime">
+            <el-date-picker
+              type="datetime"
+              placeholder="选择时间日期"
+              v-model="ruleForm.startTime"
+              style="width: 100%;"
+              default-time="16:00:00"
+              @change="startTime(ruleForm.startTime)"
+              value-format="yyyy-MM-dd HH:mm:ss"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-form-item>
+      <el-form-item label="结束时间" required>
+        <el-col :span="11">
+          <el-form-item prop="endTime">
+            <el-date-picker
+              type="datetime"
+              placeholder="选择时间日期"
+              v-model="ruleForm.endTime"
+              style="width: 100%;"
+              default-time="16:00:00"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              @change="endTime(ruleForm.endTime)"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-form-item>
+      <el-form-item label="活动1" required>
+        <el-form-item label="活动图片" prop="fileOne" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeOne"
+            :before-remove="beforeRemoveOne"
+            :on-success="imgOne"
+            :limit="1"
+            :file-list="fileOne"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="oneChoose.type"
+            @change="chooseTypes(oneChoose.type,1)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="oneChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(oneChoose.selectText,1)"
+            v-if="oneChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <!-- <el-input placeholder="搜索专题名称" v-if="showSpecial"></el-input> -->
+          <el-autocomplete
+            v-if="oneChoose.special"
+            v-model="oneChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select1"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="oneChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(1)"
+            v-model="oneChoose.path"
+            v-if="oneChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="活动2" required>
+        <el-form-item label="活动图片" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeTwo"
+            :before-remove="beforeRemoveTwo"
+            :on-success="imgTwo"
+            :limit="1"
+            :file-list="fileTwo"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="twoChoose.type"
+            @change="chooseTypes(twoChoose.type,2)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="twoChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(twoChoose.selectText,2)"
+            v-if="twoChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-autocomplete
+            v-model="twoChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select2"
+            v-if="twoChoose.special"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="twoChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(2)"
+            v-model="twoChoose.path"
+            v-if="twoChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="活动3" required>
+        <el-form-item label="活动图片" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeThree"
+            :before-remove="beforeRemoveThree"
+            :on-success="imgThree"
+            :limit="1"
+            :file-list="fileThree"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="threeChoose.type"
+            @change="chooseTypes(threeChoose.type,3)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="threeChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(threeChoose.selectText,3)"
+            v-if="threeChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-autocomplete
+            v-if="threeChoose.special"
+            v-model="threeChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select3"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="threeChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(3)"
+            v-model="threeChoose.path"
+            v-if="threeChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="活动4" required>
+        <el-form-item label="活动图片" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeFour"
+            :before-remove="beforeRemoveFour"
+            :on-success="imgFour"
+            :limit="1"
+            :file-list="fileFour"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="fourChoose.type"
+            @change="chooseTypes(fourChoose.type,4)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="fourChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(fourChoose.selectText,4)"
+            v-if="fourChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-autocomplete
+            v-if="fourChoose.special"
+            v-model="fourChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select4"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="fourChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(4)"
+            v-model="fourChoose.path"
+            v-if="fourChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="活动5" required>
+        <el-form-item label="活动图片" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeFive"
+            :before-remove="beforeRemoveFive"
+            :on-success="imgFive"
+            :limit="1"
+            :file-list="fileFive"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="fiveChoose.type"
+            @change="chooseTypes(fiveChoose.type,5)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="fiveChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(fiveChoose.selectText,5)"
+            v-if="fiveChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-autocomplete
+            v-if="fiveChoose.special"
+            v-model="fiveChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select5"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="fiveChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(5)"
+            v-model="fiveChoose.path"
+            v-if="fiveChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="活动6" required>
+        <el-form-item label="活动图片" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeSix"
+            :before-remove="beforeRemoveSix"
+            :on-success="imgSix"
+            :limit="1"
+            :file-list="fileSix"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="sixChoose.type"
+            @change="chooseTypes(sixChoose.type,6)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="sixChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(sixChoose.selectText,6)"
+            v-if="sixChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-autocomplete
+            v-if="sixChoose.special"
+            v-model="sixChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select6"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="sixChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(6)"
+            v-model="sixChoose.path"
+            v-if="sixChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="活动7" required>
+        <el-form-item label="活动图片" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeSeven"
+            :before-remove="beforeRemoveSeven"
+            :on-success="imgSeven"
+            :limit="1"
+            :file-list="fileSeven"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="sevenChoose.type"
+            @change="chooseTypes(sevenChoose.type,7)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="sevenChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(sevenChoose.selectText,7)"
+            v-if="sevenChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-autocomplete
+            v-if="sevenChoose.special"
+            v-model="sevenChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select7"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="sevenChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(7)"
+            v-model="sevenChoose.path"
+            v-if="sevenChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="活动8" required>
+        <el-form-item label="活动图片" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeEight"
+            :before-remove="beforeRemoveEight"
+            :on-success="imgEight"
+            :limit="1"
+            :file-list="fileEight"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="eightChoose.type"
+            @change="chooseTypes(eightChoose.type,8)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="eightChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(eightChoose.selectText,8)"
+            v-if="eightChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-autocomplete
+            v-if="eightChoose.special"
+            v-model="eightChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select8"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="eightChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(8)"
+            v-model="eightChoose.path"
+            v-if="eightChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="活动9" required>
+        <el-form-item label="活动图片" class="show">
+          <el-upload
+            class="upload-demo"
+            :action="upImgUrl"
+            :headers="headers"
+            :on-remove="removeNine"
+            :before-remove="beforeRemoveNine"
+            :on-success="imgNine"
+            :limit="1"
+            :file-list="fileNine"
+            name="file"
+          >
+            <el-button type="primary" size="mini">上传图片</el-button>
+            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="跳转页面" class="show">
+          <el-radio-group
+            v-model="nineChoose.type"
+            @change="chooseTypes(nineChoose.type,9)"
+            style="margin-right:10px;"
+          >
+            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+          </el-radio-group>
+          <el-select
+            style="display:block"
+            v-model="nineChoose.selectText"
+            placeholder="请选择"
+            @change="selectPage(nineChoose.selectText,9)"
+            v-if="nineChoose.showSelect"
+          >
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <el-autocomplete
+            v-if="nineChoose.special"
+            v-model="nineChoose.topicName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入专题名称"
+            @select="select9"
+          ></el-autocomplete>
+          <el-button type="primary" v-if="nineChoose.special" @click="toSpecialGuide">创建新专题</el-button>
+          <el-input
+            placeholder="页面可根据数据变化动态显示"
+            @blur="h5Path(9)"
+            v-model="nineChoose.path"
+            v-if="nineChoose.param"
+          ></el-input>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+        <el-button @click="cancel()">取消</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script>
+import { Message } from "element-ui";
+import { checkSpecial } from "@/api/shoppingGuide";
+import { create } from "@/api/shoppingGuide";
+import { clearTimeout } from "timers";
+export default {
+  name: "demoThree",
+  props: {
+    areaLists: Array
+  },
+  data() {
+    return {
+      timer: null,
+      ruleForm: {
+        showName: false, //是否名称展示
+        name: "", //导购名称
+        startTime: "", //开始时间
+        endTime: "", //结束时间
+        type: [], //选择商圈
+        // resource: "模版1", //默认模版
+        fileList: [], //显示在页面上图片
+        submitImg: "", //初阶上转的图片
+        path: "", //页面路径
+        goods: "" //是否展示商品
+      },
+      rules: {
+        name: [
+          { required: true, message: "请输入活动名称", trigger: "blur" },
+          { max: 10, message: "最多10个字", trigger: "blur" }
+        ],
+        startTime: [
+          {
+            type: "string",
+            required: true,
+            message: "请选择开始日期",
+            trigger: "change"
+          }
+        ],
+        endTime: [
+          {
+            type: "string",
+            required: true,
+            message: "请选择结束时间",
+            trigger: "change"
+          }
+        ],
+        type: [
+          {
+            type: "array",
+            required: true,
+            message: "请至少选择一个投放商圈",
+            trigger: "change"
+          }
+        ],
+        showName: [
+          {
+            type: "boolean",
+            required: true,
+            message: "请选择是否展示名称",
+            trigger: "change"
+          }
+        ],
+        // resource: [
+        //   { required: true, message: "请选择使用模版", trigger: "change" }
+        // ],
+        // fileList: [
+        //   {
+        //     message: "请上传图片",
+        //     trigger: "successImg"
+        //   }
+        // ],
+        goods: [
+          { required: true, message: "请至少选择一项", trigger: "change" }
+        ]
+      },
+      oneChoose: {
+        type: "", //app还是h5
+        topicName: "", //专题名称
+        topicId: "",
+        showSelect: false, //app下拉框显示
+        selectText: "", //下拉框选中的值
+        special: false, //专题搜索框和专题跳转按钮显示
+        param: false, //h5输入框显示
+        path: "", //h5路径
+        picUrl: ""
+      },
+      twoChoose: {
+        type: "",
+        topicName: "",
+        topicId: "",
+        showSelect: false,
+        selectText: "",
+        special: false,
+        param: false,
+        path: "",
+        picUrl: ""
+      },
+      threeChoose: {
+        type: "",
+        topicName: "",
+        topicId: "",
+        showSelect: false,
+        selectText: "",
+        special: false,
+        param: false,
+        path: "",
+        picUrl: ""
+      },
+      fourChoose: {
+        type: "",
+        topicName: "",
+        topicId: "",
+        showSelect: false,
+        selectText: "",
+        special: false,
+        param: false,
+        path: "",
+        picUrl: ""
+      },
+      fiveChoose: {
+        type: "",
+        topicName: "",
+        topicId: "",
+        showSelect: false,
+        selectText: "",
+        special: false,
+        param: false,
+        path: "",
+        picUrl: ""
+      },
+      sixChoose: {
+        type: "",
+        topicName: "",
+        topicId: "",
+        showSelect: false,
+        selectText: "",
+        special: false,
+        param: false,
+        path: "",
+        picUrl: ""
+      },
+      sevenChoose: {
+        type: "",
+        topicName: "",
+        topicId: "",
+        showSelect: false,
+        selectText: "",
+        special: false,
+        param: false,
+        path: "",
+        picUrl: ""
+      },
+      eightChoose: {
+        type: "",
+        topicName: "",
+        topicId: "",
+        showSelect: false,
+        selectText: "",
+        special: false,
+        param: false,
+        path: "",
+        picUrl: ""
+      },
+      nineChoose: {
+        type: "",
+        topicName: "",
+        topicId: "",
+        showSelect: false,
+        selectText: "",
+        special: false,
+        param: false,
+        path: "",
+        picUrl: ""
+      },
+      headers: { sessionId: localStorage.getItem(`sessionId`)},
+      upImgUrl: `${process.env.VUE_APP_BASE_URL}support/uploadPic`,
+      fileOne: [], //装图片
+      fileTwo: [],
+      fileThree: [],
+      fileFour: [],
+      fileFive: [],
+      fileSix: [],
+      fileSeven: [],
+      fileEight: [],
+      fileNine: [],
+      searchLists: [], //模糊搜索的数据
+      jumpType: [{ name: "APP" }, { name: "H5" }],
+      options: [
+        {
+          value: 2,
+          label: "返利商品"
+        },
+        {
+          value: 3,
+          label: "我的红包"
+        },
+        {
+          value: 4,
+          label: "充值"
+        },
+        {
+          value: 5,
+          label: "我的钱包"
+        },
+        {
+          value: 6,
+          label: "我的订单"
+        },
+        {
+          value: 11,
+          label: "店铺信息"
+        },
+        {
+          value: 12,
+          label: "设置页面"
+        },
+        {
+          value: 16,
+          label: "专题详情"
+        }
+      ]
+      //最终需要的数据格式
+      // fanlly: [],
+      // one: {
+      //   actionType: "", //app还是h5
+      //   actionContent: "", // app的code值,或者h5的路径
+      //   picUrl: "", //图片地址
+      //   actionParam: "" //如果是专题详情时，写入traId值
+      // }
+    };
+  },
+  methods: {
+   toSpecialGuide(){
+     this.$router.push("/specialinfor");
+   },
+    isShow() {
+      console.log(`是否展示`);
+      console.log(this.ruleForm.showName);
+    },
+    chooseArea(areaName) {
+      // console.log(areaName);
+      // areaName.length &&
+      //   areaName.forEach(el => {
+      //     this.areaLists.length &&
+      //       this.areaLists.forEach(el1 => {
+      //         if (el === el1.traName) {
+      //           el1.checked = true;
+      //         }
+      //       });
+      //   });
+      // console.warn(this.areaLists);
+    },
+    chooseArea1(item){
+       this.areaLists.length&&this.areaLists.forEach(el=>{
+        if(el.traName===item.traName){
+          item.checked=!item.checked;
+        };
+      });
+      console.log(`最新数据`);
+      console.log(this.areaLists);
+    },
+    //开始时间
+    startTime(date) {
+      console.info(`开始时间为${date}`);
+    },
+    endTime(date) {
+      console.info(`结束时间为${date}`);
+    },
+    cancel() {
+      this.$router.push("/ShoppingGuide");
+    },
+    submitForm(formName) {
+      
+      // this.subData();
+      clearTimeout(this.timer);
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // alert("submit!");
+          this.timer = setTimeout(() => {
+            this.subData();
+            // this.subData().then(res => {
+            //   console.log(res.data);
+            //   if (res.data.statusCode === 2000) {
+            //     console.log(res.data.body);
+            //   } else {
+            //     this.$message({
+            //       message: res.data.msg
+            //     });
+            //   }
+            // });
+          }, 500);
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    //提交信息
+    subData() {
+      let lists = [],
+        activity = [],
+        fanllyLists = [];
+      this.areaLists.forEach(el => {
+        lists.push({ checked: el.checked, traId: el.traId });
+      });
+      Promise.all([
+        this.checkActivityData1(),
+        this.checkActivityData2(),
+        this.checkActivityData3(),
+        this.checkActivityData4(),
+        this.checkActivityData5(),
+        this.checkActivityData6(),
+        this.checkActivityData7(),
+        this.checkActivityData8(),
+        this.checkActivityData9()
+      ])
+        .then(
+          res => {
+            console.log(res);
+            // this.fanlly=[{
+            //   actionContent:path||selectText,
+            //   actionType:type,
+            //   picUrl:picUrl,
+            //   actionParam:topicId
+            // }];
+            if (this.oneChoose.type === "APP") {
+              this.oneChoose.path = "";
+            } else {
+              this.oneChoose.selectText = "";
+              this.oneChoose.topicId = "";
+            }
+            if (this.twoChoose.type === "APP") {
+              this.twoChoose.path = "";
+            } else {
+              this.twoChoose.selectText = "";
+              this.twoChoose.topicId = "";
+            }
+            if (this.threeChoose.type === "APP") {
+              this.threeChoose.path = "";
+            } else {
+              this.threeChoose.selectText = "";
+              this.threeChoose.topicId = "";
+            }
+            if (this.fourChoose.type === "APP") {
+              this.fourChoose.path = "";
+            } else {
+              this.fourChoose.selectText = "";
+              this.fourChoose.topicId = "";
+            }
+            if (this.fiveChoose.type === "APP") {
+              this.fiveChoose.path = "";
+            } else {
+              this.fiveChoose.selectText = "";
+              this.fiveChoose.topicId = "";
+            }
+            if (this.sixChoose.type === "APP") {
+              this.sixChoose.path = "";
+            } else {
+              this.sixChoose.selectText = "";
+              this.sixChoose.topicId = "";
+            }
+            if (this.sevenChoose.type === "APP") {
+              this.sevenChoose.path = "";
+            } else {
+              this.sevenChoose.selectText = "";
+              this.sevenChoose.topicId = "";
+            }
+            if (this.eightChoose.type === "APP") {
+              this.eightChoose.path = "";
+            } else {
+              this.eightChoose.selectText = "";
+              this.eightChoose.topicId = "";
+            }
+            if (this.nineChoose.type === "APP") {
+              this.nineChoose.path = "";
+            } else {
+              this.nineChoose.selectText = "";
+              this.nineChoose.topicId = "";
+            }
+            activity = [
+              this.oneChoose,
+              this.twoChoose,
+              this.threeChoose,
+              this.fourChoose,
+              this.fiveChoose,
+              this.sixChoose,
+              this.sevenChoose,
+              this.eightChoose,
+              this.nineChoose
+            ];
+            activity.forEach(el => {
+              // console.log(el);
+              fanllyLists.push({
+                actionType: el.type,
+                actionContent: el.type === "APP" ? el.selectText : el.path,
+                picUrl: el.picUrl,
+                actionParam: el.topicId
+              });
+            });
+            console.log(fanllyLists);
+            let params = {
+              templateCode: "T3",
+              guideNameDisplay: this.ruleForm.showName ? 1 : 0, //是否名称展示
+              startTime: this.ruleForm.startTime,
+              endTime: this.ruleForm.endTime,
+              guideName: this.ruleForm.name, //导购名称
+              traSelectionList: lists, //选择的商圈
+              actionList: fanllyLists
+            };
+            console.log(params);
+            return create(params);
+          },
+          error => {}
+        )
+        .then(
+          res => {
+            if (res.data.statusCode === 2000) {
+              this.$message({
+                message: `创建成功`
+              });
+              this.$router.push("/shoppingGuide");
+            } else {
+              this.$message({
+                message: res.data.msg
+              });
+            }
+          },
+          error => {}
+        );
+    },
+    checkActivityData1() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.oneChoose.picUrl === "") {
+          this.$message({ message: `请上传活动一的图片` });
+        } else {
+          if (this.oneChoose.type === "APP") {
+            if (this.oneChoose.selectText == "") {
+              this.$message({ message: `请选择活动一的app页面` });
+            } else {
+              return resolve(`通过活动一的app页面`);
+            }
+          } else if (this.oneChoose.type === "H5") {
+            if (this.oneChoose.path == "") {
+              this.$message({ message: `请填写活动一的h5页面参数` });
+            } else {
+              return resolve(`通过活动一的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动一的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    checkActivityData2() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.twoChoose.picUrl === "") {
+          this.$message({ message: `请上传活动二的图片` });
+        } else {
+          if (this.twoChoose.type === "APP") {
+            if (this.twoChoose.selectText == "") {
+              this.$message({ message: `请选择活动二的app页面` });
+            } else {
+              return resolve(`通过活动二的app页面`);
+            }
+          } else if (this.twoChoose.type === "H5") {
+            if (this.twoChoose.path == "") {
+              this.$message({ message: `请填写活动二的h5页面参数` });
+            } else {
+              return resolve(`通过活动二的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动二的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    checkActivityData3() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.threeChoose.picUrl === "") {
+          this.$message({ message: `请上传活动三的图片` });
+        } else {
+          if (this.threeChoose.type === "APP") {
+            if (this.threeChoose.selectText == "") {
+              this.$message({ message: `请选择活动三的app页面` });
+            } else {
+              return resolve(`通过活动三的app页面`);
+            }
+          } else if (this.threeChoose.type === "H5") {
+            if (this.threeChoose.path == "") {
+              this.$message({ message: `请填写活动三的h5页面参数` });
+            } else {
+              return resolve(`通过活动三的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动三的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    checkActivityData4() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.fourChoose.picUrl === "") {
+          this.$message({ message: `请上传活动四的图片` });
+        } else {
+          if (this.fourChoose.type === "APP") {
+            if (this.fourChoose.selectText == "") {
+              this.$message({ message: `请选择活动四的app页面` });
+            } else {
+              return resolve(`通过活动四的app页面`);
+            }
+          } else if (this.fourChoose.type === "H5") {
+            if (this.fourChoose.path == "") {
+              this.$message({ message: `请填写活动四的h5页面参数` });
+            } else {
+              return resolve(`通过活动四的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动四的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    checkActivityData5() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.fiveChoose.picUrl === "") {
+          this.$message({ message: `请上传活动五的图片` });
+        } else {
+          if (this.fiveChoose.type === "APP") {
+            if (this.fiveChoose.selectText == "") {
+              this.$message({ message: `请选择活动五的app页面` });
+            } else {
+              return resolve(`通过活动五的app页面`);
+            }
+          } else if (this.fiveChoose.type === "H5") {
+            if (this.fiveChoose.path == "") {
+              this.$message({ message: `请填写活动五的h5页面参数` });
+            } else {
+              return resolve(`通过活动五的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动五的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    checkActivityData6() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.sixChoose.picUrl === "") {
+          this.$message({ message: `请上传活动六的图片` });
+        } else {
+          if (this.sixChoose.type === "APP") {
+            if (this.sixChoose.selectText == "") {
+              this.$message({ message: `请选择活动六的app页面` });
+            } else {
+              return resolve(`通过活动六的app页面`);
+            }
+          } else if (this.sixChoose.type === "H5") {
+            if (this.sixChoose.path == "") {
+              this.$message({ message: `请填写活动六的h5页面参数` });
+            } else {
+              return resolve(`通过活动六的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动六的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    checkActivityData7() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.sevenChoose.picUrl === "") {
+          this.$message({ message: `请上传活动七的图片` });
+        } else {
+          if (this.sevenChoose.type === "APP") {
+            if (this.sevenChoose.selectText == "") {
+              this.$message({ message: `请选择活动七的app页面` });
+            } else {
+              return resolve(`通过活动七的app页面`);
+            }
+          } else if (this.sevenChoose.type === "H5") {
+            if (this.sevenChoose.path == "") {
+              this.$message({ message: `请填写活动七的h5页面参数` });
+            } else {
+              return resolve(`通过活动七的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动七的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    checkActivityData8() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.eightChoose.picUrl === "") {
+          this.$message({ message: `请上传活动八的图片` });
+        } else {
+          if (this.eightChoose.type === "APP") {
+            if (this.eightChoose.selectText == "") {
+              this.$message({ message: `请选择活动八的app页面` });
+            } else {
+              return resolve(`通过活动八的app页面`);
+            }
+          } else if (this.eightChoose.type === "H5") {
+            if (this.eightChoose.path == "") {
+              this.$message({ message: `请填写活动八的h5页面参数` });
+            } else {
+              return resolve(`通过活动八的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动八的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    checkActivityData9() {
+      let promise = new Promise((resolve, reject) => {
+        if (this.nineChoose.picUrl === "") {
+          this.$message({ message: `请上传活动九的图片` });
+        } else {
+          if (this.nineChoose.type === "APP") {
+            if (this.nineChoose.selectText == "") {
+              this.$message({ message: `请选择活动九的app页面` });
+            } else {
+              return resolve(`通过活动九的app页面`);
+            }
+          } else if (this.nineChoose.type === "H5") {
+            if (this.nineChoose.path == "") {
+              this.$message({ message: `请填写活动九的h5页面参数` });
+            } else {
+              return resolve(`通过活动九的h5页面参数`);
+            }
+          } else {
+            this.$message({ message: `请选择活动九的跳转页面` });
+          }
+        }
+      });
+      return promise;
+    },
+    //模糊搜索
+    searchTopic(topicName, fn) {
+      let params = {
+        topicName: topicName
+      };
+      checkSpecial(params).then(
+        res => {
+          console.log(res.data);
+          if (res.data.statusCode === 2000) {
+            res.data.body.length &&
+              res.data.body.forEach(el => {
+                el.value = el.topicName;
+              });
+            this.searchLists = res.data.body;
+            fn(this.searchLists);
+          } else {
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    },
+    querySearchAsync(queryString, fn) {
+      this.searchTopic(queryString, fn);
+    },
+    select1(item) {
+      //只要topicId,当选择app页面中的专题详情时
+      console.log(item);
+      this.oneChoose.topicName = item.value;
+      this.oneChoose.topicId = item.topicId;
+      console.info(
+        `第1栏搜索名称${this.oneChoose.topicName},id号${this.oneChoose.topicId}`
+      );
+    },
+    select2(item) {
+      console.info(`第2栏搜索`);
+      console.log(item);
+      this.twoChoose.topicName = item.value;
+      this.twoChoose.topicId = item.topicId;
+      console.info(
+        `第2栏搜索名称${this.twoChoose.topicName},id号${this.twoChoose.topicId}`
+      );
+    },
+    select3(item) {
+      console.info(`第三栏搜索`);
+      console.log(item);
+      this.threeChoose.topicName = item.value;
+      this.threeChoose.topicId = item.topicId;
+      console.info(
+        `第3栏搜索名称${this.threeChoose.topicName},id号${
+          this.threeChoose.topicId
+        }`
+      );
+    },
+    select4(item) {
+      console.info(`第四栏搜索`);
+      console.log(item);
+      this.fourChoose.topicName = item.value;
+      this.fourChoose.topicId = item.topicId;
+      console.info(
+        `第4栏搜索名称${this.fourChoose.topicName},id号${
+          this.fourChoose.topicId
+        }`
+      );
+    },
+    select5(item) {
+      console.info(`第五栏搜索`);
+      console.log(item);
+      this.fiveChoose.topicName = item.value;
+      this.fiveChoose.topicId = item.topicId;
+      console.info(
+        `第5栏搜索名称${this.fiveChoose.topicName},id号${
+          this.fiveChoose.topicId
+        }`
+      );
+    },
+    select6(item) {
+      console.info(`第六栏搜索`);
+      console.log(item);
+      this.sixChoose.topicName = item.value;
+      this.sixChoose.topicId = item.topicId;
+      console.info(
+        `第6栏搜索名称${this.sixChoose.topicName},id号${this.sixChoose.topicId}`
+      );
+    },
+    select7(item) {
+      console.info(`第七栏搜索`);
+      console.log(item);
+      this.sevenChoose.topicName = item.value;
+      this.sevenChoose.topicId = item.topicId;
+      console.info(
+        `第7栏搜索名称${this.sevenChoose.topicName},id号${
+          this.sevenChoose.topicId
+        }`
+      );
+    },
+    select8(item) {
+      console.info(`第八栏搜索`);
+      console.log(item);
+      this.eightChoose.topicName = item.value;
+      this.eightChoose.topicId = item.topicId;
+      console.info(
+        `第7栏搜索名称${this.eightChoose.topicName},id号${
+          this.eightChoose.topicId
+        }`
+      );
+    },
+    select9(item) {
+      console.info(`第九栏搜索`);
+      console.log(item);
+      this.nineChoose.topicName = item.value;
+      this.nineChoose.topicId = item.topicId;
+      console.info(
+        `第7栏搜索名称${this.nineChoose.topicName},id号${
+          this.nineChoose.topicId
+        }`
+      );
+    },
+    //跳转的是app还是h5(单选框)
+    chooseTypes(chooseType, num) {
+      switch (num) {
+        case 1:
+          this.oneChoose.type = chooseType;
+          console.log(`第1栏跳转方式${this.oneChoose.type}`);
+          console.log(`第1栏app选中项${this.oneChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.oneChoose.showSelect = true;
+            this.oneChoose.param = false;
+          } else {
+            this.oneChoose.showSelect = false;
+            this.oneChoose.param = true;
+            this.oneChoose.special = false; //专题搜索框
+          }
+          if (
+            this.oneChoose.type === "APP" &&
+            this.oneChoose.selectText === 16
+          ) {
+            this.oneChoose.special = true;
+          }
+          break;
+        case 2:
+          this.twoChoose.type = chooseType;
+          console.log(`第2栏跳转方式${this.twoChoose.type}`);
+          console.log(`第2栏app选中项${this.twoChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.twoChoose.showSelect = true;
+            this.twoChoose.param = false;
+          } else {
+            this.twoChoose.showSelect = false;
+            this.twoChoose.param = true;
+            this.twoChoose.special = false; //专题搜索框
+          }
+          if (
+            this.twoChoose.type === "APP" &&
+            this.twoChoose.selectText === 16
+          ) {
+            this.twoChoose.special = true;
+          }
+          break;
+        case 3:
+          this.threeChoose.type = chooseType;
+          console.log(`第3栏跳转方式${this.threeChoose.type}`);
+          console.log(`第3栏app选中项${this.threeChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.threeChoose.showSelect = true;
+            this.threeChoose.param = false;
+          } else {
+            this.threeChoose.showSelect = false;
+            this.threeChoose.param = true;
+            this.threeChoose.special = false; //专题搜索框
+          }
+          if (
+            this.threeChoose.type === "APP" &&
+            this.threeChoose.selectText === 16
+          ) {
+            this.threeChoose.special = true;
+          }
+          break;
+        case 4:
+          this.fourChoose.type = chooseType;
+          console.log(`第4栏跳转方式${this.fourChoose.type}`);
+          console.log(`第4栏app选中项${this.fourChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.fourChoose.showSelect = true;
+            this.fourChoose.param = false;
+          } else {
+            this.fourChoose.showSelect = false;
+            this.fourChoose.param = true;
+            this.fourChoose.special = false; //专题搜索框
+          }
+          if (
+            this.fourChoose.type === "APP" &&
+            this.fourChoose.selectText === 16
+          ) {
+            this.fourChoose.special = true;
+          }
+          break;
+        case 5:
+          this.fiveChoose.type = chooseType;
+          console.log(`第5栏跳转方式${this.fiveChoose.type}`);
+          console.log(`第5栏app选中项${this.fiveChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.fiveChoose.showSelect = true;
+            this.fiveChoose.param = false;
+          } else {
+            this.fiveChoose.showSelect = false;
+            this.fiveChoose.param = true;
+            this.fiveChoose.special = false; //专题搜索框
+          }
+          if (
+            this.fiveChoose.type === "APP" &&
+            this.fiveChoose.selectText === 16
+          ) {
+            this.fiveChoose.special = true;
+          }
+          break;
+        case 6:
+          this.sixChoose.type = chooseType;
+          console.log(`第6栏跳转方式${this.sixChoose.type}`);
+          console.log(`第6栏app选中项${this.sixChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.sixChoose.showSelect = true;
+            this.sixChoose.param = false;
+          } else {
+            this.sixChoose.showSelect = false;
+            this.sixChoose.param = true;
+            this.sixChoose.special = false; //专题搜索框
+          }
+          if (
+            this.sixChoose.type === "APP" &&
+            this.sixChoose.selectText === 16
+          ) {
+            this.sixChoose.special = true;
+          }
+          break;
+        case 7:
+          this.sevenChoose.type = chooseType;
+          console.log(`第7栏跳转方式${this.sevenChoose.type}`);
+          console.log(`第7栏app选中项${this.sevenChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.sevenChoose.showSelect = true;
+            this.sevenChoose.param = false;
+          } else {
+            this.sevenChoose.showSelect = false;
+            this.sevenChoose.param = true;
+            this.sevenChoose.special = false; //专题搜索框
+          }
+          if (
+            this.sevenChoose.type === "APP" &&
+            this.sevenChoose.selectText === 16
+          ) {
+            this.sevenChoose.special = true;
+          }
+          break;
+        case 8:
+          this.eightChoose.type = chooseType;
+          console.log(`第8栏跳转方式${this.eightChoose.type}`);
+          console.log(`第8栏app选中项${this.eightChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.eightChoose.showSelect = true;
+            this.eightChoose.param = false;
+          } else {
+            this.eightChoose.showSelect = false;
+            this.eightChoose.param = true;
+            this.eightChoose.special = false; //专题搜索框
+          }
+          if (
+            this.eightChoose.type === "APP" &&
+            this.eightChoose.selectText === 16
+          ) {
+            this.eightChoose.special = true;
+          }
+          break;
+        case 9:
+          this.nineChoose.type = chooseType;
+          console.log(`第9栏跳转方式${this.nineChoose.type}`);
+          console.log(`第9栏app选中项${this.nineChoose.selectText}`);
+          if (chooseType === "APP") {
+            this.nineChoose.showSelect = true;
+            this.nineChoose.param = false;
+          } else {
+            this.nineChoose.showSelect = false;
+            this.nineChoose.param = true;
+            this.nineChoose.special = false; //专题搜索框
+          }
+          if (
+            this.nineChoose.type === "APP" &&
+            this.nineChoose.selectText === 16
+          ) {
+            this.nineChoose.special = true;
+          }
+          break;
+      }
+    },
+    //app这边的下拉选项框
+    selectPage(page, num) {
+      switch (num) {
+        case 1:
+          if (page === 16) {
+            this.oneChoose.special = true;
+          } else {
+            this.oneChoose.special = false;
+          }
+          this.oneChoose.selectText = page;
+          console.log(`第1栏选中code:${this.oneChoose.selectText}`);
+          break;
+        case 2:
+          if (page === 16) {
+            this.twoChoose.special = true;
+          } else {
+            this.twoChoose.special = false;
+          }
+          this.twoChoose.selectText = page;
+          break;
+        case 3:
+          if (page === 16) {
+            this.threeChoose.special = true;
+          } else {
+            this.threeChoose.special = false;
+          }
+          this.threeChoose.selectText = page;
+          break;
+        case 4:
+          if (page === 16) {
+            this.fourChoose.special = true;
+          } else {
+            this.fourChoose.special = false;
+          }
+          this.fourChoose.selectText = page;
+          break;
+        case 5:
+          if (page === 16) {
+            this.fiveChoose.special = true;
+          } else {
+            this.fiveChoose.special = false;
+          }
+          this.fiveChoose.selectText = page;
+          break;
+        case 6:
+          if (page === 16) {
+            this.sixChoose.special = true;
+          } else {
+            this.sixChoose.special = false;
+          }
+          this.sixChoose.selectText = page;
+          break;
+        case 7:
+          if (page === 16) {
+            this.sevenChoose.special = true;
+          } else {
+            this.sevenChoose.special = false;
+          }
+          this.sevenChoose.selectText = page;
+          break;
+        case 8:
+          if (page === 16) {
+            this.eightChoose.special = true;
+          } else {
+            this.eightChoose.special = false;
+          }
+          this.eightChoose.selectText = page;
+          break;
+        case 9:
+          if (page === 16) {
+            this.nineChoose.special = true;
+          } else {
+            this.nineChoose.special = false;
+          }
+          this.nineChoose.selectText = page;
+          break;
+      }
+    },
+    h5Path(num) {
+      switch (num) {
+        case 1:
+          console.log(`第1栏h5路径${this.oneChoose.path}`);
+          break;
+        case 2:
+          console.log(`第2栏h5路径${this.twoChoose.path}`);
+          break;
+        case 3:
+          console.log(`第3栏h5路径${this.threeChoose.path}`);
+          break;
+        case 4:
+          console.log(`第4栏h5路径${this.fourChoose.path}`);
+          break;
+        case 5:
+          console.log(`第5栏h5路径${this.fiveChoose.path}`);
+          break;
+        case 6:
+          console.log(`第6栏h5路径${this.sixChoose.path}`);
+          break;
+        case 7:
+          console.log(`第7栏h5路径${this.sevenChoose.path}`);
+          break;
+        case 8:
+          console.log(`第7栏h5路径${this.eightChoose.path}`);
+          break;
+        case 9:
+          console.log(`第7栏h5路径${this.nineChoose.path}`);
+          break;
+      }
+    },
+    imgOne(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileOne.push({ name: res.body, url: res.body });
+        this.oneChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    // handlePreview(file) {
+    //   console.warn(file);
+    // },
+    removeOne(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileOne = [];
+    },
+    beforeRemoveOne(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    imgTwo(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileTwo.push({ name: res.body, url: res.body });
+        this.twoChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    removeTwo(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileTwo = [];
+    },
+    beforeRemoveTwo(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    imgThree(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileThree.push({ name: res.body, url: res.body });
+        this.threeChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    removeThree(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileThree = [];
+    },
+    beforeRemoveThree(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    imgFour(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileFour.push({ name: res.body, url: res.body });
+        this.fourChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    removeFour(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileFour = [];
+    },
+    beforeRemoveFour(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    imgFive(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileFive.push({ name: res.body, url: res.body });
+        this.fiveChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    removeFive(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileFive = [];
+    },
+    beforeRemoveFive(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    imgSix(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileSix.push({ name: res.body, url: res.body });
+        this.sixChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    removeSix(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileSix = [];
+    },
+    beforeRemoveSix(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    imgSeven(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileSeven.push({ name: res.body, url: res.body });
+        this.sevenChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    removeSeven(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileSeven = [];
+    },
+    beforeRemoveSeven(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    imgEight(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileEight.push({ name: res.body, url: res.body });
+        this.eightChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    removeEight(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileEight = [];
+    },
+    beforeRemoveEight(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    imgNine(res) {
+      console.log(res);
+      if (res.statusCode === 2000) {
+        this.fileNine.push({ name: res.body, url: res.body });
+        this.nineChoose.picUrl = res.body;
+      } else {
+        this.$message({
+          $message: res.msg
+        });
+      }
+    },
+    removeNine(files, fileList) {
+      //确认删除后，数组清空,因为只有一个文件
+      this.fileNine = [];
+    },
+    beforeRemoveNine(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    }
+  }
+};
+</script>
+
+<style scoped lang="less">
+.guide_setting {
+  margin-top: 20px;
+}
+.show {
+  text-align: left;
+}
+.text_align {
+  text-align: left;
+}
+</style>
