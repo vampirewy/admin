@@ -30,13 +30,6 @@ export function topGun(params) {
     data: params
   });
 }
-//查看专题详情
-export function topicDetails(params){
-  return service({
-    url:`shopping/topics/${params}/detail`,
-    method:`get`
-  });
-}
 //创建无活动类型
 export function createNoActivity(params) {
   return service({
@@ -90,4 +83,27 @@ export function delLists(params) {
     method: `post`,
     data: params
   });
+}
+//查看专题详情
+export function topicDetails(params){
+  return service({
+    url:`shopping/topics/${params}/detail`,
+    method:`get`
+  });
+}
+//修改无活动信息
+export function modifyNoActivity(params){
+  return service({
+    url:`shopping/topics/${params.topicId}/modify`,
+    method:`post`,
+    data:params
+  });
+}
+//修改有活动的信息
+export function modifyActivity(params){
+  return service({
+    url:`shopping/topics/${params.topicId}/modifyMoneyOff`,
+    method:`post`,
+    data:params
+  })
 }
