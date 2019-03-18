@@ -12,16 +12,15 @@
           >
             <el-form-item label="导购模版" prop="resource" class="show">
               <el-radio-group v-model="ruleForm.resource" @change="demo(ruleForm.resource)">
-                <el-radio v-for="(item,index) in resourceLists" :label="item.name" :key="index"></el-radio>
+                <el-radio :disabled="allDisabled" v-for="(item,index) in resourceLists" :label="item.name" :key="index"></el-radio>
               </el-radio-group>
             </el-form-item>
           </el-form>
           <demoOne v-if="showResourceOne" :areaLists="areaLists"></demoOne>
           <demoTwo v-if="showResourceTwo" :areaLists="areaLists"></demoTwo>
           <demoThree v-if="showResourceThree" :areaLists="areaLists"></demoThree>
-          <demoFour v-if="showResourceFour" :areaLists="areaLists"></demoFour>
-          <demoFive v-if="showResourceFive" :areaLists="areaLists"></demoFive>
-        
+          <demoFour v-if="showResourceFour"></demoFour>
+          <demoFive v-if="showResourceFive"></demoFive>
         </div>
       </el-col>
       <el-col :span="12">
@@ -43,6 +42,7 @@ import demoThree from "@/views/shoppingGuide/demo3/demoThree.vue";
 import demoFour from "@/views/shoppingGuide/demo4/demoFour.vue";
 import demoFive from "@/views/shoppingGuide/demo5/demoFive.vue";
 import { guideAllArea } from "@/api/headerBar";
+import { guideDetails } from "@/api/shoppingGuide";
 // import { create } from "@/api/shoppingGuide";
 export default {
   name: "addShopping",
@@ -55,6 +55,7 @@ export default {
   },
   data() {
     return {
+      allDisabled:false,
       showResourceOne: true, //模版1
       showResourceTwo: false, //模版2
       showResourceThree: false, //模版3
@@ -141,10 +142,83 @@ export default {
         this.inputGoodsNum = "";
         this.ruleForm.submitImg = "";
       }
+    },
+    modifyAllAreaName() {
+      let params = {
+        guideId: this.guideId
+      };
+      guideDetails(params).then(
+        res => {
+          console.log(res.data);
+          if(res.data.statusCode===2000){
+            this.areaLists=res.data.body.traSelectionList;
+            console.log(this.areaLists);
+          }else{};
+        },
+        error => {}
+      );
     }
   },
   created() {
-    this.allAreaName();
+    /**
+     * 1.先判断@templateCode 跳哪个对应的模版 T1 T2 T3 T4 T5
+     * 2.只有生效中才能延长时间
+     * 2.请求查询导购明细接口 
+     * 3.商圈赋值
+     */
+    // console.log(this.$route.params);
+    if (this.$route.params.guideId) {
+      this.allDisabled=true;
+      this.guideId = this.$route.params.guideId;
+      this.status = this.$route.params.status; //导购单子的状态 未生效、生效中、已停用、已删除、已结束
+      this.ruleForm.resource =
+        this.$route.params.templateCode == `T1`
+          ? `模版1`
+          : this.$route.params.templateCode == `T2`
+          ? `模版2`
+          : this.$route.params.templateCode == `T3`
+          ? `模版3`
+          : this.$route.params.templateCode == `T4`
+          ? `模版4`
+          : this.$route.params.templateCode == `T5`
+          ? `模版5`
+          : '';
+      console.log(`模版为`);
+      console.log(this.ruleForm.resource);
+      if(this.ruleForm.resource===`模版1`){
+        this.showResourceOne=true;
+        this.showResourceTwo=false;
+        this.showResourceThree=false;
+        this.showResourceFour=false;
+        this.showResourceFive=false;
+      }else if(this.ruleForm.resource===`模版2`){
+        this.showResourceTwo=true;
+        this.showResourceOne=false;
+        this.showResourceThree=false;
+        this.showResourceFour=false;
+        this.showResourceFive=false;
+      }else if(this.ruleForm.resource===`模版3`){
+        this.showResourceThree=true;
+        this.showResourceOne=false;
+        this.showResourceTwo=false;
+        this.showResourceFour=false;
+        this.showResourceFive=false;
+      }else if(this.ruleForm.resource===`模版4`){
+        this.showResourceFour=true;
+        this.showResourceOne=false;
+        this.showResourceTwo=false;
+        this.showResourceThree=false;
+        this.showResourceFive=false;
+      }else{
+        this.showResourceFive=true;
+        this.showResourceOne=false;
+        this.showResourceTwo=false;
+        this.showResourceThree=false;
+        this.showResourceFour=false;
+      };
+    } else {
+      this.allAreaName();
+    };
   }
 };
 </script>

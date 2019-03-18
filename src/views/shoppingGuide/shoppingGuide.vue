@@ -22,20 +22,22 @@
         <el-table-column align="center" prop="operation" label="操作">
           <template slot-scope="scope">
             <el-button
-              @click="handleClick(scope.row)"
+              @click="edit(scope.row)"
               type="text"
               v-if="scope.row.status==='未生效'"
             >编辑</el-button>
             <el-button type="text" v-if="scope.row.status==='未生效'" @click="del(scope.row)">删除</el-button>
-            <el-button type="text" v-if="scope.row.status==='生效中'">延长时间</el-button>
+            <el-button type="text" v-if="scope.row.status==='生效中'" @click="delay(scope.row)">延长时间</el-button>
             <el-button type="text" v-if="scope.row.status==='生效中'" @click="stop(scope.row)">停用</el-button>
             <el-button
               type="text"
               v-if="scope.row.status==='已停用'||scope.row.status==='已结束'||scope.row.status==='已删除'"
+              @click="see(scope.row)"
             >查看</el-button>
             <el-button
               type="text"
               v-if="scope.row.status==='已停用'||scope.row.status==='已结束'||scope.row.status==='已删除'"
+              @click="resEdit(scope.row,`重新添加`)"
             >重新添加</el-button>
           </template>
         </el-table-column>
@@ -167,6 +169,56 @@ export default {
         }
       );
     },
+    edit(currentRow) {
+      console.log(`当前编辑行`);
+      console.log(currentRow);
+      let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
+      this.$router.push({
+        name:`addShopping`,
+        params:{
+          guideId,
+          status,
+          templateCode
+        }
+      });
+    },
+    delay(currentRow){
+      console.log(`当前需延时的行`);
+      console.log(currentRow);
+      let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
+      this.$router.push({
+        name:`addShopping`,
+        params:{
+          guideId,
+          status,
+          templateCode
+        }
+      });
+    },
+    see(currentRow){
+      console.log(currentRow);
+      let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
+      this.$router.push({
+        name:`addShopping`,
+        params:{
+          guideId,
+          status,
+          templateCode
+        }
+      });
+    },
+    resEdit(currentRow,text){
+      let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
+      this.$router.push({
+        name:`addShopping`,
+        params:{
+          guideId,
+          status,
+          templateCode,
+          text:text
+        }
+      });
+    },
     stop(row) {
       this.$confirm(
         "如果操作停用，投放该导购的商圈，导购将不会再显示！",
@@ -244,9 +296,6 @@ export default {
       console.log(`当前第${page}页`);
       this.pageNum = page;
       this.shoppingGuideRequest(this.traId, this.statusLists, this.guideName);
-    },
-    handleClick(row) {
-      console.log(row);
     },
     firstPage() {
       console.log(`第${this.pageNum}页`);

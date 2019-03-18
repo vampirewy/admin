@@ -46,3 +46,26 @@ export function checkSpecial(params) {
     params
   });
 }
+//查询导购明细
+export function guideDetails(params) {
+  return service({
+    url: `shopping/guides/${params.guideId}`,
+    method: `get`
+  });
+}
+//延长时间 
+export function onlyDelayTime(params){
+  return service({
+    url:`shopping/guides/${params.guideId}/extendEndTime`,
+    method:`post`,
+    data:params
+  });
+}
+//修改导购信息
+export function modifyGuide(params){
+  return service({
+    url:`shopping/guides/${params.guideId}/modify`,
+    method:`post`,
+    data:params
+  });
+}

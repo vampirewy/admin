@@ -1457,7 +1457,7 @@ export default {
       this.fromSpecialGuide(this.topicId);
     } else {
       this.allAreaName();
-    }
+    };
     console.log(this.$route.params);
   }
   // updated() {
