@@ -157,10 +157,10 @@ export default {
     edit(currentRow) {
       console.log(`当前选中行`);
       console.log(currentRow);
-      this.$router.push({name:'infor',params:{
-        topicId:currentRow.topicId,
-        status:currentRow.status
-      }});
+      // this.$router.push({name:'infor',params:{
+      //   topicId:currentRow.topicId,
+      //   status:currentRow.status
+      // }});
     },
     del(row) {
       this.$confirm(

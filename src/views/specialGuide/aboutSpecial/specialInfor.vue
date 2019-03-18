@@ -347,37 +347,37 @@ export default {
     };
   },
   methods: {
-    // fromSpecialGuide(topicId) {
-    //   topicDetails(topicId).then(
-    //     res => {
-    //       console.log(`从专题列表跳转过来的数据为`);
-    //       console.log(res.data);
-    //       if (res.data.statusCode === 2000) {
-    //         this.areaLists = res.data.body.traSelectionList;
-    //         //点亮el.checked为true的复选框
-    //         this.areaLists.forEach(el=>{if(el.checked){this.ruleForm.type.push(el.traName);};}); 
-    //         this.ruleForm.name = res.data.body.topicName; //专题名称
-    //         this.ruleForm.startTime = res.data.body.startTime; //开始时间
-    //         this.ruleForm.endTime = res.data.body.endTime; //结束时间
-    //         this.ruleForm.isImg = res.data.body.picDisplay; //是否显示图片
-    //         this.ruleForm.isNotice = res.data.body.isNotice; //是否公告
-    //         this.ruleForm.noticeText = res.data.body.noticeText; //公告内容
-    //         this.ruleForm.redPack = res.data.body.useRedPacket; //是否使用红包
-    //         this.ruleForm.value = res.data.body.topicRule==null?-1:res.data.body.topicRule.ruleType==0?0:res.data.body.topicRule.ruleType==1?1:-1;//选择活动赋值的值 -1为没有，1为梯度，0为满减
-    //         // if(res.data.ruleType){this.ruleForm.value=1;}else{this.ruleForm.value=0;}; //判断活动后下面显示的金额框对应满减还是梯度
-    //         // if(res.data.topicRule&&res.data.ruleType){
-    //         //   //梯度
-    //         // }else if(res.data.topicRule){
-    //         //   //满减
-    //         //   this.ruleForm.reduceRule.gradientAmount = res.data.body.topicRule.gradientList[0].gradientAmount;
-    //         //   this.ruleForm.reduceRule.reduceAmount = res.data.body.topicRule.gradiendList[0].reduceAmount;
-    //         // };
+    fromSpecialGuide(topicId) {
+      topicDetails(topicId).then(
+        res => {
+          console.log(`从专题列表跳转过来的数据为`);
+          console.log(res.data);
+          if (res.data.statusCode === 2000) {
+            this.areaLists = res.data.body.traSelectionList;
+            //点亮el.checked为true的复选框
+            this.areaLists.forEach(el=>{if(el.checked){this.ruleForm.type.push(el.traName);};}); 
+            this.ruleForm.name = res.data.body.topicName; //专题名称
+            this.ruleForm.startTime = res.data.body.startTime; //开始时间
+            this.ruleForm.endTime = res.data.body.endTime; //结束时间
+            this.ruleForm.isImg = res.data.body.picDisplay; //是否显示图片
+            this.ruleForm.isNotice = res.data.body.isNotice; //是否公告
+            this.ruleForm.noticeText = res.data.body.noticeText; //公告内容
+            this.ruleForm.redPack = res.data.body.useRedPacket; //是否使用红包
+            this.ruleForm.value = res.data.body.topicRule==null?-1:res.data.body.topicRule.ruleType==0?0:res.data.body.topicRule.ruleType==1?1:-1;//选择活动赋值的值 -1为没有，1为梯度，0为满减
+            // if(res.data.ruleType){this.ruleForm.value=1;}else{this.ruleForm.value=0;}; //判断活动后下面显示的金额框对应满减还是梯度
+            // if(res.data.topicRule&&res.data.ruleType){
+            //   //梯度
+            // }else if(res.data.topicRule){
+            //   //满减
+            //   this.ruleForm.reduceRule.gradientAmount = res.data.body.topicRule.gradientList[0].gradientAmount;
+            //   this.ruleForm.reduceRule.reduceAmount = res.data.body.topicRule.gradiendList[0].reduceAmount;
+            // };
            
-    //       };
-    //     },
-    //     error => {}
-    //   );
-    // },
+          };
+        },
+        error => {}
+      );
+    },
     async allAreaName() {
       const res = await guideAllArea();
       if (res.data.statusCode === 2000) {
