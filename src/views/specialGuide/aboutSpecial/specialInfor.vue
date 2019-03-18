@@ -255,7 +255,9 @@ import { guideAllArea } from "@/api/headerBar";
 import {
   createNoActivity,
   createActivity,
-  topicDetails
+  topicDetails,
+  modifyNoActivity,
+  modifyActivity
 } from "@/api/specialGuide";
 import { parse } from "path";
 import { create } from "domain";
@@ -363,8 +365,22 @@ export default {
             this.ruleForm.isNotice = res.data.body.isNotice; //是否公告
             this.ruleForm.noticeText = res.data.body.noticeText; //公告内容
             this.ruleForm.redPack = res.data.body.useRedPacket; //是否使用红包
-            //
+            //topicRule 活动规则如果为null则选择活动为请选择(-1),如果为0，则为每满减(0),如果为1，则为梯度(1)
             this.ruleForm.value = res.data.body.topicRule==null?-1:res.data.body.topicRule.ruleType==0?0:res.data.body.topicRule.ruleType==1?1:-1;//选择活动赋值的值 -1为没有，1为梯度，0为满减
+            if(res.data.body.topicRule){
+              if(res.data.body.topicRule.gradientList.length==1){
+                //满减
+                res.data.body.topicRule.gradientList.forEach(el=>{
+                  this.ruleForm.reduceRule.gradientAmount=el.gradientAmount;
+                  this.ruleForm.reduceRule.reduceAmount=el.reduceAmount;
+                });
+              }else{
+                //梯度
+                res.data.body.topicRule.gradientList.forEach(el=>{
+                  
+                });
+              };
+            };
             // if(res.data.ruleType){this.ruleForm.value=1;}else{this.ruleForm.value=0;}; //判断活动后下面显示的金额框对应满减还是梯度
             // if(res.data.topicRule&&res.data.ruleType){
             //   //梯度
