@@ -154,14 +154,14 @@ export default {
      *  @status 当前单子状态
      *  @topicId 当前专题ID号
      */
-    // edit(currentRow) {
-    //   console.log(`当前选中行`);
-    //   console.log(currentRow);
-    //   // this.$router.push({name:'infor',params:{
-    //   //   topicId:currentRow.topicId,
-    //   //   status:currentRow.status
-    //   // }});
-    // },
+    edit(currentRow) {
+      console.log(`当前选中行`);
+      console.log(currentRow);
+      // this.$router.push({name:'infor',params:{
+      //   topicId:currentRow.topicId,
+      //   status:currentRow.status
+      // }});
+    },
     del(row) {
       this.$confirm(
         "如果操作删除,投放该专题的商圈,导购将不再生效!",
