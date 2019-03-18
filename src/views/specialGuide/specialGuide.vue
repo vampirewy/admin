@@ -27,15 +27,17 @@
             <template slot-scope="scope">
               <el-button type="text" v-if="scope.row.status==='未生效'" @click="edit(scope.row)">编辑</el-button>
               <el-button type="text" v-if="scope.row.status==='未生效'" @click="del(scope.row)">删除</el-button>
-              <el-button type="text" v-if="scope.row.status==='生效中'">延长时间</el-button>
+              <el-button type="text" v-if="scope.row.status==='生效中'" @click="delayTime(scope.row)">延长时间</el-button>
               <el-button type="text" v-if="scope.row.status==='生效中'" @click="stop(scope.row)">停用</el-button>
               <el-button
                 type="text"
                 v-if="scope.row.status==='已停用'||scope.row.status==='已结束'||scope.row.status==='已删除'"
+                @click="see(scope.row)"
               >查看</el-button>
               <el-button
                 type="text"
                 v-if="scope.row.status==='已停用'||scope.row.status==='已结束'||scope.row.status==='已删除'"
+                @click="reEdit(scope.row,'重新编辑')"
               >重新编辑</el-button>
               <el-button
                 @click="top(scope.row)"
@@ -161,6 +163,35 @@ export default {
         topicId:currentRow.topicId,
         status:currentRow.status
       }});
+    },
+    delayTime(currentRow){
+      this.$router.push({
+        name:'infor',
+        params:{
+          topicId:currentRow.topicId,
+          status:currentRow.status
+        }
+      });
+    },
+    see(currentRow){
+      this.$router.push({
+        name:'infor',
+        params:{
+          topicId:currentRow.topicId,
+          status:currentRow.status
+        }
+      });
+    },
+    //调用创建专题信息接口，后台生成新信息条目
+    reEdit(currentRow,editText){
+      this.$router.push({
+        name:'infor',
+        params:{
+          topicId:currentRow.topicId,
+          status:currentRow.status,
+          text:editText
+        }
+      });
     },
     del(row) {
       this.$confirm(

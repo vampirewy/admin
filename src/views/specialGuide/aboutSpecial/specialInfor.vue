@@ -14,6 +14,7 @@
               v-model="ruleForm.name"
               placeholder="请输入专题名称"
               @blur="inputName(ruleForm.name)"
+              :disabled="allDisabled"
             ></el-input>
           </el-form-item>
           <el-form-item label="开始时间" required>
@@ -27,6 +28,7 @@
                   default-time="16:00:00"
                   @change="startTime(ruleForm.startTime)"
                   value-format="yyyy-MM-dd HH:mm:ss"
+                  :disabled="allDisabled"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
@@ -42,6 +44,7 @@
                   default-time="16:00:00"
                   value-format="yyyy-MM-dd HH:mm:ss"
                   @change="endTime(ruleForm.endTime)"
+                  :disabled="modifyTime"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
@@ -53,6 +56,7 @@
                 :label="item.traName"
                 :key="index"
                 name="type"
+                :disabled="allDisabled"
                 @change="chooseArea1(item,index)"
               ></el-checkbox>
             </el-checkbox-group>
@@ -65,6 +69,7 @@
                 label="图片"
                 name="details"
                 @change="chooseImg(ruleForm.isImg)"
+                :disabled="allDisabled"
               ></el-checkbox>
               <el-upload
                 class="upload-demo"
@@ -77,6 +82,7 @@
                 :limit="1"
                 :file-list="ruleForm.fileList"
                 name="file"
+                :disabled="allDisabled"
               >
                 <el-button type="primary" size="mini">上传图片</el-button>
                 <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -87,6 +93,7 @@
                 v-model="ruleForm.isNotice"
                 label="公告"
                 name="details"
+                :disabled="allDisabled"
                 @change="chooseNotice(ruleForm.isNotice)"
               ></el-checkbox>
               <el-input
@@ -94,18 +101,25 @@
                 placeholder="自定义公告"
                 style="width:50%;"
                 v-model="ruleForm.noticeText"
+                :disabled="allDisabled"
               ></el-input>
             </div>
           </el-form-item>
           <el-form-item label="可叠加活动" prop="redPack" class="show">
             <el-checkbox-group v-model="ruleForm.redPack">
-              <el-checkbox label="红包" name="redPack" @change="chooseRedPack(ruleForm.redPack)"></el-checkbox>
+              <el-checkbox
+                label="红包"
+                name="redPack"
+                :disabled="allDisabled"
+                @change="chooseRedPack(ruleForm.redPack)"
+              ></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="选择活动" class="show">
             <el-select
               v-model="ruleForm.value"
               placeholder="请选择"
+              :disabled="allDisabled"
               @blur="chooseActivity(ruleForm.value)"
             >
               <el-option
@@ -128,11 +142,13 @@
                 class="input_num"
                 @blur="reduceCount()"
                 v-model="ruleForm.reduceRule.gradientAmount"
+                :disabled="allDisabled"
               ></el-input>
               <span>减</span>
               <el-input
                 class="input_num"
                 v-model="ruleForm.reduceRule.reduceAmount"
+                :disabled="allDisabled"
                 @blur="reduceCount1()"
               ></el-input>元
               <span
@@ -148,12 +164,14 @@
                   class="input_num"
                   v-model="ruleForm.gradientRule1.gradientAmount"
                   @blur="gradientCount()"
+                  :disabled="allDisabled"
                 ></el-input>
                 <span>减</span>
                 <el-input
                   class="input_num"
                   v-model="ruleForm.gradientRule1.reduceAmount"
                   @blur="gradientCount1()"
+                  :disabled="allDisabled"
                 ></el-input>元
                 <span
                   style="color:red;"
@@ -167,12 +185,14 @@
                   class="input_num"
                   v-model="ruleForm.gradientRule2.gradientAmount"
                   @blur="gradientCount2()"
+                  :disabled="allDisabled"
                 ></el-input>
                 <span>减</span>
                 <el-input
                   class="input_num"
                   v-model="ruleForm.gradientRule2.reduceAmount"
                   @blur="gradientCount3()"
+                  :disabled="allDisabled"
                 ></el-input>元
                 <span
                   style="color:red;"
@@ -186,12 +206,14 @@
                   class="input_num"
                   v-model="ruleForm.gradientRule3.gradientAmount"
                   @blur="gradientCount4()"
+                  :disabled="allDisabled"
                 ></el-input>
                 <span>减</span>
                 <el-input
                   class="input_num"
                   v-model="ruleForm.gradientRule3.reduceAmount"
                   @blur="gradientCount5()"
+                  :disabled="allDisabled"
                 ></el-input>元
                 <span
                   style="color:red;"
@@ -205,12 +227,14 @@
                   class="input_num"
                   v-model="ruleForm.gradientRule4.gradientAmount"
                   @blur="gradientCount6()"
+                  :disabled="allDisabled"
                 ></el-input>
                 <span>减</span>
                 <el-input
                   class="input_num"
                   v-model="ruleForm.gradientRule4.reduceAmount"
                   @blur="gradientCount7()"
+                  :disabled="allDisabled"
                 ></el-input>元
                 <span
                   style="color:red;"
@@ -224,12 +248,14 @@
                   class="input_num"
                   v-model="ruleForm.gradientRule5.gradientAmount"
                   @blur="gradientCount8()"
+                  :disabled="allDisabled"
                 ></el-input>
                 <span>减</span>
                 <el-input
                   class="input_num"
                   v-model="ruleForm.gradientRule5.reduceAmount"
                   @blur="gradientCount9()"
+                  :disabled="allDisabled"
                 ></el-input>元
                 <span
                   style="color:red;"
@@ -240,8 +266,9 @@
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">保存并下一步</el-button>
-            <el-button @click="resetForm('ruleForm')">取消</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')" v-if="newCreate">保存并下一步</el-button>
+            <el-button type="primary" @click="modifyForm('ruleForm')" v-if="modifySave">保存</el-button>
+            <el-button @click="resetForm('ruleForm')" v-if="newCreate">取消</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -257,10 +284,13 @@ import {
   createActivity,
   topicDetails,
   modifyNoActivity,
-  modifyActivity
+  modifyActivity,
+  onlyModifyTime
 } from "@/api/specialGuide";
 import { parse } from "path";
 import { create } from "domain";
+import { setTimeout } from "timers";
+// import { setTimeout, setInterval } from 'timers';
 export default {
   name: "infor",
   // props: {
@@ -268,6 +298,11 @@ export default {
   // },
   data() {
     return {
+      newCreate: true, //新创建按键控制
+      modifySave: false, //修改按键控制
+      //控制生效中的只能修改时间，已停用、已删除、已停止全部禁用
+      modifyTime: false,
+      allDisabled: false,
       reg: /^[+]?\d*$/, //正整数
       // reg: /^\d+(\.\d{1,2})?$/, //只能输入正数，小数点两位
       areaLists: [],
@@ -357,40 +392,115 @@ export default {
           if (res.data.statusCode === 2000) {
             this.areaLists = res.data.body.traSelectionList;
             //点亮el.checked为true的复选框
-            this.areaLists.forEach(el=>{if(el.checked){this.ruleForm.type.push(el.traName);};}); 
+            this.areaLists.forEach(el => {
+              if (el.checked) {
+                this.ruleForm.type.push(el.traName);
+              }
+            });
             this.ruleForm.name = res.data.body.topicName; //专题名称
             this.ruleForm.startTime = res.data.body.startTime; //开始时间
             this.ruleForm.endTime = res.data.body.endTime; //结束时间
             this.ruleForm.isImg = res.data.body.picDisplay; //是否显示图片
-            this.ruleForm.isNotice = res.data.body.isNotice; //是否公告
+            this.ruleForm.picUrl = res.data.body.picUrl
+              ? res.data.body.picUrl
+              : ""; //图片
+            //图片路径
+            this.ruleForm.fileList = res.data.body.picUrl
+              ? [{ name: res.data.body.picUrl, url: res.data.body.picUrl }]
+              : [];
+            this.ruleForm.isNotice = res.data.body.noticeTextDisplay; //是否公告
             this.ruleForm.noticeText = res.data.body.noticeText; //公告内容
             this.ruleForm.redPack = res.data.body.useRedPacket; //是否使用红包
             //topicRule 活动规则如果为null则选择活动为请选择(-1),如果为0，则为每满减(0),如果为1，则为梯度(1)
-            this.ruleForm.value = res.data.body.topicRule==null?-1:res.data.body.topicRule.ruleType==0?0:res.data.body.topicRule.ruleType==1?1:-1;//选择活动赋值的值 -1为没有，1为梯度，0为满减
-            if(res.data.body.topicRule){
-              if(res.data.body.topicRule.gradientList.length==1){
-                //满减
-                res.data.body.topicRule.gradientList.forEach(el=>{
-                  this.ruleForm.reduceRule.gradientAmount=el.gradientAmount;
-                  this.ruleForm.reduceRule.reduceAmount=el.reduceAmount;
+            this.ruleForm.value =
+              res.data.body.topicRule == null
+                ? -1
+                : res.data.body.topicRule.ruleType == 0
+                ? 0
+                : res.data.body.topicRule.ruleType == 1
+                ? 1
+                : -1; //选择活动赋值的值 -1为没有，1为梯度，0为满减
+            //先判断有没有规则，再判断活动类型
+            if (res.data.body.topicRule) {
+              //ruleType==0满减 1梯度
+              //满减
+              if (res.data.body.topicRule.ruleType == 0) {
+                res.data.body.topicRule.gradientList.forEach(el => {
+                  this.ruleForm.reduceRule.gradientAmount = el.gradientAmount;
+                  this.ruleForm.reduceRule.reduceAmount = el.reduceAmount;
                 });
-              }else{
-                //梯度
-                res.data.body.topicRule.gradientList.forEach(el=>{
-                  
-                });
-              };
-            };
-            // if(res.data.ruleType){this.ruleForm.value=1;}else{this.ruleForm.value=0;}; //判断活动后下面显示的金额框对应满减还是梯度
-            // if(res.data.topicRule&&res.data.ruleType){
-            //   //梯度
-            // }else if(res.data.topicRule){
-            //   //满减
-            //   this.ruleForm.reduceRule.gradientAmount = res.data.body.topicRule.gradientList[0].gradientAmount;
-            //   this.ruleForm.reduceRule.reduceAmount = res.data.body.topicRule.gradiendList[0].reduceAmount;
-            // };
-           
-          };
+              } else {
+                let gradiendList = res.data.body.topicRule.gradientList;
+                if (res.data.body.topicRule.gradientList.length == 1) {
+                  gradiendList.forEach(el => {
+                    this.ruleForm.gradientRule1.gradientAmount =
+                      el.gradientAmount;
+                    this.ruleForm.gradientRule1.reduceAmount = el.reduceAmount;
+                  });
+                } else if (res.data.body.topicRule.gradientList.length == 2) {
+                  this.ruleForm.gradientRule1.gradientAmount =
+                    gradiendList[0].gradientAmount;
+                  this.ruleForm.gradientRule1.reduceAmount =
+                    gradiendList[0].reduceAmount;
+                  this.ruleForm.gradientRule2.gradientAmount =
+                    gradiendList[1].gradientAmount;
+                  this.ruleForm.gradientRule2.reduceAmount =
+                    gradiendList[1].reduceAmount;
+                } else if (res.data.body.topicRule.gradientList.length == 3) {
+                  this.ruleForm.gradientRule1.gradientAmount =
+                    gradiendList[0].gradientAmount;
+                  this.ruleForm.gradientRule1.reduceAmount =
+                    gradiendList[0].reduceAmount;
+                  this.ruleForm.gradientRule2.gradientAmount =
+                    gradiendList[1].gradientAmount;
+                  this.ruleForm.gradientRule2.reduceAmount =
+                    gradiendList[1].reduceAmount;
+                  this.ruleForm.gradientRule3.gradientAmount =
+                    gradiendList[2].gradientAmount;
+                  this.ruleForm.gradientRule3.reduceAmount =
+                    gradiendList[2].reduceAmount;
+                } else if (res.data.body.topicRule.gradientList.length == 4) {
+                  this.ruleForm.gradientRule1.gradientAmount =
+                    gradiendList[0].gradientAmount;
+                  this.ruleForm.gradientRule1.reduceAmount =
+                    gradiendList[0].reduceAmount;
+                  this.ruleForm.gradientRule2.gradientAmount =
+                    gradiendList[1].gradientAmount;
+                  this.ruleForm.gradientRule2.reduceAmount =
+                    gradiendList[1].reduceAmount;
+                  this.ruleForm.gradientRule3.gradientAmount =
+                    gradiendList[2].gradientAmount;
+                  this.ruleForm.gradientRule3.reduceAmount =
+                    gradiendList[2].reduceAmount;
+                  this.ruleForm.gradientRule4.gradientAmount =
+                    gradiendList[3].gradientAmount;
+                  this.ruleForm.gradientRule4.reduceAmount =
+                    gradiendList[3].reduceAmount;
+                } else if (res.data.body.topicRule.gradientList.length == 5) {
+                  this.ruleForm.gradientRule1.gradientAmount =
+                    gradiendList[0].gradientAmount;
+                  this.ruleForm.gradientRule1.reduceAmount =
+                    gradiendList[0].reduceAmount;
+                  this.ruleForm.gradientRule2.gradientAmount =
+                    gradiendList[1].gradientAmount;
+                  this.ruleForm.gradientRule2.reduceAmount =
+                    gradiendList[1].reduceAmount;
+                  this.ruleForm.gradientRule3.gradientAmount =
+                    gradiendList[2].gradientAmount;
+                  this.ruleForm.gradientRule3.reduceAmount =
+                    gradiendList[2].reduceAmount;
+                  this.ruleForm.gradientRule4.gradientAmount =
+                    gradiendList[3].gradientAmount;
+                  this.ruleForm.gradientRule4.reduceAmount =
+                    gradiendList[3].reduceAmount;
+                  this.ruleForm.gradientRule5.gradientAmount =
+                    gradiendList[4].gradientAmount;
+                  this.ruleForm.gradientRule5.reduceAmount =
+                    gradiendList[4].reduceAmount;
+                }
+              }
+            }
+          }
         },
         error => {}
       );
@@ -479,6 +589,7 @@ export default {
     handleRemove(files, fileList) {
       //确认删除后，数组清空,因为只有一个文件
       this.ruleForm.fileList = [];
+      this.ruleForm.picUrl = "";
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -619,6 +730,237 @@ export default {
           return false;
         }
       });
+    },
+    //修改
+    modifyForm() {
+      let list = [];
+      // console.warn(this.areaLists);
+      this.areaLists.length &&
+        this.areaLists.forEach(el => {
+          list.push({ checked: el.checked, traId: el.traId });
+        });
+      console.log(this.status);
+      if (this.status === `生效中`) {
+        let params = { endTime: this.ruleForm.endTime,topicId:this.topicId };
+        onlyModifyTime(params).then(
+          res => {
+            console.log(res.data);
+            if (res.data.statusCode === 2000) {
+              this.$message({ message: `修改成功`, type: `success` });
+              setTimeout(() => {
+                this.$router.push("/specialguide");
+              }, 500);
+            } else {
+              this.$message({ message: res.data.msg, type: `error` });
+            }
+          },
+          error => {
+            console.log(error);
+          }
+        );
+      } else {
+        if (this.ruleForm.value === -1) {
+          let params = {
+            topicId: this.topicId,
+            topicName: this.ruleForm.name, //专题名称
+            startTime: this.ruleForm.startTime, //开始时间
+            endTime: this.ruleForm.endTime, //结束时间
+            traSelectionList: list, //商圈
+            useRedPacket: this.ruleForm.redPack, //红包
+            noticeText: this.ruleForm.noticeText, //公告内容
+            picUrl: this.ruleForm.picUrl, //图片
+            noticeTextDisplay: this.ruleForm.isNotice, //是否公告
+            picDisplay: this.ruleForm.isImg //是否图片
+          };
+          modifyNoActivity(params).then(
+            res => {
+              console.log(res.data);
+              if (res.data.statusCode === 2000) {
+                this.$message({ message: `修改成功`, type: `success` });
+                setTimeout(() => {
+                  this.$router.push("/specialguide");
+                }, 500);
+              } else {
+                this.$message({ message: res.data.msg, type: `error` });
+              }
+            },
+            error => {
+              console.log(error);
+            }
+          );
+        } else if (this.ruleForm.value === 0) {
+          if (
+            this.ruleForm.reduceRule.gradientAmount &&
+            this.ruleForm.reduceRule.reduceAmount
+          ) {
+            let params = {
+              topicId: this.topicId,
+              topicName: this.ruleForm.name,
+              startTime: this.ruleForm.startTime,
+              endTime: this.ruleForm.endTime,
+              traSelectionList: list,
+              useRedPacket: this.ruleForm.redPack,
+              noticeText: this.ruleForm.noticeText,
+              picUrl: this.ruleForm.picUrl,
+              noticeTextDisplay: this.ruleForm.isNotice,
+              picDisplay: this.ruleForm.isImg,
+              topicType: "moneyOff",
+              topicRule: {
+                gradientList: [
+                  {
+                    gradientAmount: this.ruleForm.reduceRule.gradientAmount,
+                    reduceAmount: this.ruleForm.reduceRule.reduceAmount
+                  }
+                ],
+                ruleType: this.ruleForm.value
+              }
+            };
+            //大于等于5，弹框提醒
+            if (this.reduceDivision >= 5) {
+              this.$confirm(
+                "返点率大于5%,可能会导致商品价格过低,请谨慎设置!是否继续?",
+                "优惠金额过高,请确认",
+                {
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  type: "warning"
+                }
+              ).then(() => {
+                modifyActivity(params).then(
+                  res => {
+                    if (res.data.statusCode === 2000) {
+                      console.log(res.data);
+                      this.$message({
+                        message: `修改成功`,
+                        type: `success`
+                      });
+                      setTimeout(() => {
+                        this.$router.push("/specialguide");
+                      }, 500);
+                    } else {
+                      this.$message({
+                        message: res.data.msg,
+                        type: `error`
+                      });
+                    }
+                  },
+                  error => {}
+                );
+              });
+            } else {
+              modifyActivity(params).then(
+                res => {
+                  if (res.data.statusCode === 2000) {
+                    console.log(res.data);
+                    setTimeout(() => {
+                      this.$router.push("/specialguide");
+                    }, 500);
+                    this.$message({
+                      message: `修改成功`,
+                      type: `success`
+                    });
+                  } else {
+                    this.$message({
+                      message: res.data.msg,
+                      type: `error`
+                    });
+                  }
+                },
+                error => {}
+              );
+            }
+          } else {
+            this.$message({
+              message: `请输入满减金额`,
+              type: `error`
+            });
+          }
+        } else {
+          this.sortData().then(res => {
+            console.log(res);
+            console.log(res);
+            let list = [];
+            this.areaLists.length &&
+              this.areaLists.forEach(el => {
+                list.push({ checked: el.checked, traId: el.traId });
+              });
+            let params = {
+              topicId: this.topicId,
+              topicName: this.ruleForm.name,
+              startTime: this.ruleForm.startTime,
+              endTime: this.ruleForm.endTime,
+              traSelectionList: list,
+              useRedPacket: this.ruleForm.redPack,
+              noticeText: this.ruleForm.noticeText,
+              picUrl: this.ruleForm.picUrl,
+              noticeTextDisplay: this.ruleForm.isNotice,
+              picDisplay: this.ruleForm.isImg,
+              topicType: "moneyOff",
+              topicRule: {
+                gradientList: res,
+                ruleType: this.ruleForm.value
+              }
+            };
+            if (
+              this.gradientDivision1 >= 5 ||
+              this.gradientDivision2 >= 5 ||
+              this.gradientDivision3 >= 5 ||
+              this.gradientDivision4 >= 5 ||
+              this.gradientDivision5 >= 5
+            ) {
+              this.$confirm(
+                "返点率大于5%,可能会导致商品价格过低,请谨慎设置!是否继续?",
+                "优惠金额过高,请确认",
+                {
+                  confirmButtonText: "确定",
+                  cancelButtonText: "取消",
+                  type: "warning"
+                }
+              ).then(() => {
+                modifyActivity(params).then(
+                  res => {
+                    if (res.data.statusCode === 2000) {
+                      this.$message({
+                        message: `修改成功`,
+                        type: `success`
+                      });
+                      setTimeout(() => {
+                        this.$router.push("/specialguide");
+                      }, 500);
+                    } else {
+                      this.$message({
+                        message: res.data.msg,
+                        type: `error`
+                      });
+                    }
+                  },
+                  error => {}
+                );
+              });
+            } else {
+              modifyActivity(params).then(
+                res => {
+                  if (res.data.statusCode === 2000) {
+                    this.$message({
+                      message: `修改成功`,
+                      type: `success`
+                    });
+                    setTimeout(() => {
+                      this.$router.push("/specialguide");
+                    }, 500);
+                  } else {
+                    this.$message({
+                      message: res.data.msg,
+                      type: `error`
+                    });
+                  }
+                },
+                error => {}
+              );
+            }
+          });
+        }
+      }
     },
     async subRequest() {
       console.log(this.ruleForm.value);
@@ -1080,13 +1422,42 @@ export default {
    *   @status为专题状态 未生效可以全部修改 生效中只能修改时间
    */
   created() {
-    this.allAreaName();
     //注释为编辑跳转用
+    /** 可编辑的状态
+     *  1.编辑---可修改全部信息，@submitText为保存
+     *  2.查看---隐藏@submitText按钮并禁止所有可操作动作
+     *  3.延长时间--只能修改时间，别的全禁@submitText为保存
+     *   @modifySave 底部保存按钮切换  修改
+     *   @newCreate  底部保存按钮切换  新创建
+     *   @allDisabled  查看--所有按键全部失灵
+     *   @modifyTime   延长时间--只能修改时间
+     * 4.重新编辑--调用创建接口，不传topicId
+     */
     if (this.$route.params.topicId) {
-      this.topicId = this.$route.params.topicId;
-      this.status = this.$route.params.status;
+      this.topicId = this.$route.params.topicId; //专题ID
+      this.status = this.$route.params.status; //专题状态 生效中，未生效，已停用，已结束，已删除
+      if (this.status === "未生效") {
+        this.modifySave = true;
+        this.newCreate = false;
+      } else if (this.status === "生效中") {
+        this.modifySave = true;
+        this.newCreate = false;
+        this.allDisabled = true;
+        this.modifyTime = false;
+      } else {
+        if (this.$route.params.text) {
+        } else {
+          this.modifySave = false;
+          this.newCreate = false;
+          this.modifyTime = true;
+          this.allDisabled = true;
+          this.modifyTime = true;
+        }
+      }
       this.fromSpecialGuide(this.topicId);
-    };
+    } else {
+      this.allAreaName();
+    }
     console.log(this.$route.params);
   }
   // updated() {

@@ -107,3 +107,11 @@ export function modifyActivity(params){
     data:params
   })
 }
+//生效中只修改时间
+export function onlyModifyTime(params){
+  return service({
+    url:`shopping/topics/${params.topicId}/extendEndTime`,
+    method:`post`,
+    data:params
+  });
+}
