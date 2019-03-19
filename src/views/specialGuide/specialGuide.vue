@@ -77,7 +77,7 @@ export default {
   data() {
     return {
       totalCount: null,
-      // totalPage: null,
+      totalPage: null,
       pageSize: 20,
       pageNum: 1,
       specialGuideLists: [],
@@ -123,6 +123,7 @@ export default {
           if (res.data.statusCode === 2000) {
             console.log(1111);
             this.totalCount = res.data.body.totalSize;
+            this.totalPage = res.data.body.pageCount;
             // this.totalCount = res.data.body.pageCount;
             res.data.body.pageData &&
               res.data.body.pageData.length &&
@@ -320,7 +321,7 @@ export default {
       this.specialGuideRequest(this.traId, this.statusLists, this.topicName);
     },
     lastPage() {
-      this.pageNum = this.totalCount;
+      this.pageNum = this.totalPage;
       console.log(`最后${this.pageNum}页`);
       this.specialGuideRequest(this.traId, this.statusLists, this.topicName);
     }

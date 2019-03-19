@@ -73,7 +73,7 @@ export default {
     return {
       input: ``,
       totalCount: null,
-      // totalPage: null,
+      totalPage: null,
       pageSize: 20,
       pageNum: 1,
       shoppingGuideLists: [],
@@ -119,6 +119,7 @@ export default {
           if (res.data.statusCode === 2000) {
             console.info(res.data.body);
             this.totalCount = res.data.body.totalSize;
+            this.totalPage = res.data.body.pageCount;
             // this.totalCount=res.data.body.pageCount;
             // this.totalPage = Math.ceil(res.data.body.totalSize / this.pageSize);
             res.data.body.pageData &&
@@ -304,7 +305,7 @@ export default {
     },
     lastPage() {
       console.log(`最后第${this.pageNum}页`);
-      this.pageNum = this.totalCount;
+      this.pageNum = this.totalPage;
       this.shoppingGuideRequest(this.traId, this.statusLists, this.guideName);
     }
   },
