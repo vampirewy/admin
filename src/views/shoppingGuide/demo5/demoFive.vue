@@ -82,7 +82,12 @@
             @change="chooseTypes(oneChoose.type,1)"
             style="margin-right:10px;"
           >
-            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio
+              :disabled="allDisabled"
+              v-for="(item,index) in jumpType"
+              :label="item.name"
+              :key="index"
+            ></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -142,7 +147,12 @@
             @change="chooseTypes(twoChoose.type,2)"
             style="margin-right:10px;"
           >
-            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio
+              :disabled="allDisabled"
+              v-for="(item,index) in jumpType"
+              :label="item.name"
+              :key="index"
+            ></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -248,7 +258,13 @@
 
 <script>
 import { Message } from "element-ui";
-import { create, guideDetails,modifyGuide,onlyDelayTime,checkSpecial } from "@/api/shoppingGuide";
+import {
+  create,
+  guideDetails,
+  modifyGuide,
+  onlyDelayTime,
+  checkSpecial
+} from "@/api/shoppingGuide";
 import { guideAllArea } from "@/api/headerBar";
 export default {
   name: "demoFive",
@@ -257,12 +273,12 @@ export default {
   // },
   data() {
     return {
-      newCreate:true, //新建保存
-      modifySave:false, //修改保存
-      modifyTime: false,//只可修改结束时间
+      newCreate: true, //新建保存
+      modifySave: false, //修改保存
+      modifyTime: false, //只可修改结束时间
       allDisabled: false, //全部禁用
       timer: null,
-      areaLists:[],
+      areaLists: [],
       ruleForm: {
         showName: false, //是否名称展示
         name: "", //导购名称
@@ -402,7 +418,7 @@ export default {
     };
   },
   methods: {
-    allArea(){
+    allArea() {
       guideAllArea().then(
         res => {
           console.log(res.data);
@@ -416,68 +432,105 @@ export default {
         }
       );
     },
-    fromShoppingGuide(){
-      let params={guideId:this.guideId};
-      guideDetails(params).then(res=>{
-        if(res.data.statusCode===2000){
-          console.log(res.data);
-          this.areaLists=res.data.body.traSelectionList;
-          this.areaLists.forEach(el=>{if(el.checked){this.ruleForm.type.push(el.traName);};});
-          this.ruleForm.showName=res.data.body.guideNameDisplay?true:false; //是否展示名称
-          this.ruleForm.name=res.data.body.guideName; //导购名称
-          this.ruleForm.startTime=res.data.body.startTime; //开始时间
-          this.ruleForm.endTime=res.data.body.endTime; //结束时间
-          this.oneChoose.type=res.data.body.actionList[0].actionType.toUpperCase(); //跳转页面 APP H5
-          this.twoChoose.type=res.data.body.actionList[1].actionType.toUpperCase();
-          this.threeChoose.type=res.data.body.actionList[2].actionType.toUpperCase();
-          //活动1
-          this.oneChoose.topicId=res.data.body.actionList[0].actionParam;
-          if(this.oneChoose.type===`APP`){
-            //选中为APP时，显示下拉框并赋值；
-            this.oneChoose.showSelect=true;
-            if(res.data.body.actionList[0].actionContent==16){this.oneChoose.special=true;this.oneChoose.topicName=res.data.body.actionList[0].actionParamName;};
-            this.options.forEach(el=>{
-              if(res.data.body.actionList[0].actionContent==el.value){this.oneChoose.selectText=el.value;};
+    fromShoppingGuide() {
+      let params = { guideId: this.guideId };
+      guideDetails(params).then(
+        res => {
+          if (res.data.statusCode === 2000) {
+            console.log(res.data);
+            this.areaLists = res.data.body.traSelectionList;
+            this.areaLists.forEach(el => {
+              if (el.checked) {
+                this.ruleForm.type.push(el.traName);
+              }
             });
-          }else{
-            //为H5时，显示输入路径框
-            this.oneChoose.param=true;
-            this.oneChoose.path=res.data.body.actionList[0].actionContent;
-          };
-          this.oneChoose.picUrl=res.data.body.actionList[0].picUrl;
-          this.fileOne.push({name:this.oneChoose.picUrl,value:this.oneChoose.picUrl});
-          //活动2
-          this.twoChoose.topicId=res.data.body.actionList[1].actionParam;
-          if(this.twoChoose.type===`APP`){
-            this.twoChoose.showSelect=true;
-            if(res.data.body.actionList[1].actionContent==16){this.twoChoose.special=true;this.twoChoose.topicName=res.data.body.actionList[1].actionParamName;};
-            this.options.forEach(el=>{
-              if(res.data.body.actionList[1].actionContent==el.value){this.twoChoose.selectText=el.value;};
+            this.ruleForm.showName = res.data.body.guideNameDisplay
+              ? true
+              : false; //是否展示名称
+            this.ruleForm.name = res.data.body.guideName; //导购名称
+            this.ruleForm.startTime = res.data.body.startTime; //开始时间
+            this.ruleForm.endTime = res.data.body.endTime; //结束时间
+            this.oneChoose.type = res.data.body.actionList[0].actionType.toUpperCase(); //跳转页面 APP H5
+            this.twoChoose.type = res.data.body.actionList[1].actionType.toUpperCase();
+            this.threeChoose.type = res.data.body.actionList[2].actionType.toUpperCase();
+            //活动1
+            this.oneChoose.topicId = res.data.body.actionList[0].actionParam;
+            if (this.oneChoose.type === `APP`) {
+              //选中为APP时，显示下拉框并赋值；
+              this.oneChoose.showSelect = true;
+              if (res.data.body.actionList[0].actionContent == 16) {
+                this.oneChoose.special = true;
+                this.oneChoose.topicName =
+                  res.data.body.actionList[0].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[0].actionContent == el.value) {
+                  this.oneChoose.selectText = el.value;
+                }
+              });
+            } else {
+              //为H5时，显示输入路径框
+              this.oneChoose.param = true;
+              this.oneChoose.path = res.data.body.actionList[0].actionContent;
+            }
+            this.oneChoose.picUrl = res.data.body.actionList[0].picUrl;
+            this.fileOne.push({
+              name: this.oneChoose.picUrl,
+              value: this.oneChoose.picUrl
             });
-          }else{
-            this.twoChoose.param=true;
-            this.twoChoose.path=res.data.body.actionList[1].actionContent;
-          };
-          this.twoChoose.picUrl=res.data.body.actionList[1].picUrl;
-          this.fileTwo.push({name:this.twoChoose.picUrl,value:this.twoChoose.picUrl});
-          //活动3
-          this.threeChoose.topicId=res.data.body.actionList[2].actionParam;
-          if(this.threeChoose.type===`APP`){
-            this.threeChoose.showSelect=true;
-            if(res.data.body.actionList[2].actionContent==16){this.threeChoose.special=true;this.threeChoose.topicName=res.data.body.actionList[2].actionParamName;};
-            this.options.forEach(el=>{
-              if(res.data.body.actionList[2].actionContent==el.value){this.threeChoose.selectText=el.value;};
+            //活动2
+            this.twoChoose.topicId = res.data.body.actionList[1].actionParam;
+            if (this.twoChoose.type === `APP`) {
+              this.twoChoose.showSelect = true;
+              if (res.data.body.actionList[1].actionContent == 16) {
+                this.twoChoose.special = true;
+                this.twoChoose.topicName =
+                  res.data.body.actionList[1].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[1].actionContent == el.value) {
+                  this.twoChoose.selectText = el.value;
+                }
+              });
+            } else {
+              this.twoChoose.param = true;
+              this.twoChoose.path = res.data.body.actionList[1].actionContent;
+            }
+            this.twoChoose.picUrl = res.data.body.actionList[1].picUrl;
+            this.fileTwo.push({
+              name: this.twoChoose.picUrl,
+              value: this.twoChoose.picUrl
             });
-          }else{
-            this.threeChoose.param=true;
-            this.threeChoose.path=res.data.body.actionList[2].actionContent;
-          };
-          this.threeChoose.picUrl=res.data.body.actionList[2].picUrl;
-          this.fileThree.push({name:this.threeChoose.picUrl,value:this.threeChoose.picUrl});
-        }else{};
-      },error=>{
-        console.log(error);
-      })
+            //活动3
+            this.threeChoose.topicId = res.data.body.actionList[2].actionParam;
+            if (this.threeChoose.type === `APP`) {
+              this.threeChoose.showSelect = true;
+              if (res.data.body.actionList[2].actionContent == 16) {
+                this.threeChoose.special = true;
+                this.threeChoose.topicName =
+                  res.data.body.actionList[2].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[2].actionContent == el.value) {
+                  this.threeChoose.selectText = el.value;
+                }
+              });
+            } else {
+              this.threeChoose.param = true;
+              this.threeChoose.path = res.data.body.actionList[2].actionContent;
+            }
+            this.threeChoose.picUrl = res.data.body.actionList[2].picUrl;
+            this.fileThree.push({
+              name: this.threeChoose.picUrl,
+              value: this.threeChoose.picUrl
+            });
+          } else {
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
     },
     toSpecialGuide() {
       this.$router.push("/specialinfor");
@@ -534,84 +587,101 @@ export default {
         }
       });
     },
-    modifyForm(){
+    modifyForm() {
       console.log(`修改专题`);
-      if(this.status===`生效中`){
-        let params={
-          guideId:this.guideId,
-          endTime:this.ruleForm.endTime
+      if (this.status === `生效中`) {
+        let params = {
+          guideId: this.guideId,
+          endTime: this.ruleForm.endTime
         };
-        onlyDelayTime(params).then(res=>{
-          if(res.data.statusCode===2000){
-            this.$message({message:`修改成功`,type:`success`});
-            setTimeout(()=>{this.$router.push('/shoppingGuide')},500);
-          }else{
-            this.$message({message:res.data.msg,type:`error`});
-          };
-        },error=>{
-
-        });
-      }else{
-        let lists=[],activity=[],fanllyLists=[];
-        this.areaLists.forEach(el=>{lists.push({ checked: el.checked, traId: el.traId });});
-         Promise.all([this.checkActivityData1(),this.checkActivityData2(),this.checkActivityData3()])
-        .then(
+        onlyDelayTime(params).then(
           res => {
-            console.log(res);
-            console.log();
-            if (this.oneChoose.type === "APP") {
-              this.oneChoose.path = "";
+            if (res.data.statusCode === 2000) {
+              this.$message({ message: `修改成功`, type: `success` });
+              setTimeout(() => {
+                this.$router.push("/shoppingGuide");
+              }, 500);
             } else {
-              this.oneChoose.selectText = "";
-              this.oneChoose.topicId = "";
+              this.$message({ message: res.data.msg, type: `error` });
             }
-            if (this.twoChoose.type === "APP") {
-              this.twoChoose.path = "";
-            } else {
-              this.twoChoose.selectText = "";
-              this.twoChoose.topicId = "";
-            }
-            if (this.threeChoose.type === "APP") {
-              this.threeChoose.path = "";
-            } else {
-              this.threeChoose.selectText = "";
-              this.threeChoose.topicId = "";
-            }
-            activity = [this.oneChoose, this.twoChoose, this.threeChoose];
-            activity.forEach(el => {
-              console.log(el);
-              fanllyLists.push({
-                actionType: el.type,
-                actionContent: el.type === "APP" ? el.selectText : el.path,
-                picUrl: el.picUrl,
-                actionParam: el.topicId
-              });
-            });
-            console.log(fanllyLists);
-            let params = {
-              guideId:this.guideId,
-              templateCode: "T5",
-              guideNameDisplay: this.ruleForm.showName ? 1 : 0, //是否名称展示
-              startTime: this.ruleForm.startTime,
-              endTime: this.ruleForm.endTime,
-              guideName: this.ruleForm.name, //导购名称
-              traSelectionList: lists, //选择的商圈
-              actionList: fanllyLists
-            };
-            console.log(params);
-            return modifyGuide(params);
           },
           error => {}
-        ).then(res=>{
-          if(res.data.statusCode===2000){
-            console.log(res.data.body);
-            this.$message({message:`修改成功`,type:`success`});
-            setTimeout(()=>{this.$router.push('/shoppingGuide')},500);
-          }else{
-            this.$message({message:res.data.msg,type:`error`});
-          };
-        },error=>{});
-      };
+        );
+      } else {
+        let lists = [],
+          activity = [],
+          fanllyLists = [];
+        this.areaLists.forEach(el => {
+          lists.push({ checked: el.checked, traId: el.traId });
+        });
+        Promise.all([
+          this.checkActivityData1(),
+          this.checkActivityData2(),
+          this.checkActivityData3()
+        ])
+          .then(
+            res => {
+              console.log(res);
+              console.log();
+              if (this.oneChoose.type === "APP") {
+                this.oneChoose.path = "";
+              } else {
+                this.oneChoose.selectText = "";
+                this.oneChoose.topicId = "";
+              }
+              if (this.twoChoose.type === "APP") {
+                this.twoChoose.path = "";
+              } else {
+                this.twoChoose.selectText = "";
+                this.twoChoose.topicId = "";
+              }
+              if (this.threeChoose.type === "APP") {
+                this.threeChoose.path = "";
+              } else {
+                this.threeChoose.selectText = "";
+                this.threeChoose.topicId = "";
+              }
+              activity = [this.oneChoose, this.twoChoose, this.threeChoose];
+              activity.forEach(el => {
+                console.log(el);
+                fanllyLists.push({
+                  actionType: el.type,
+                  actionContent: el.type === "APP" ? el.selectText : el.path,
+                  picUrl: el.picUrl,
+                  actionParam: el.topicId
+                });
+              });
+              console.log(fanllyLists);
+              let params = {
+                guideId: this.guideId,
+                templateCode: "T5",
+                guideNameDisplay: this.ruleForm.showName ? 1 : 0, //是否名称展示
+                startTime: this.ruleForm.startTime,
+                endTime: this.ruleForm.endTime,
+                guideName: this.ruleForm.name, //导购名称
+                traSelectionList: lists, //选择的商圈
+                actionList: fanllyLists
+              };
+              console.log(params);
+              return modifyGuide(params);
+            },
+            error => {}
+          )
+          .then(
+            res => {
+              if (res.data.statusCode === 2000) {
+                console.log(res.data.body);
+                this.$message({ message: `修改成功`, type: `success` });
+                setTimeout(() => {
+                  this.$router.push("/shoppingGuide");
+                }, 500);
+              } else {
+                this.$message({ message: res.data.msg, type: `error` });
+              }
+            },
+            error => {}
+          );
+      }
     },
     //提交信息
     subData() {
@@ -684,7 +754,7 @@ export default {
             if (res.data.statusCode === 2000) {
               this.$message({
                 message: `创建成功`,
-                type:`success`
+                type: `success`
               });
               this.$router.push("/shoppingGuide");
             } else {
@@ -785,7 +855,8 @@ export default {
               });
             this.searchLists = res.data.body;
             fn(this.searchLists);
-          } else {};
+          } else {
+          }
         },
         error => {
           console.log(error);
@@ -955,7 +1026,7 @@ export default {
     removeOne(files, fileList) {
       //确认删除后，数组清空,因为只有一个文件
       this.fileOne = [];
-      this.oneChoose.picUrl="";
+      this.oneChoose.picUrl = "";
     },
     beforeRemoveOne(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -974,7 +1045,7 @@ export default {
     removeTwo(files, fileList) {
       //确认删除后，数组清空,因为只有一个文件
       this.fileTwo = [];
-      this.twoChoose.picUrl="";
+      this.twoChoose.picUrl = "";
     },
     beforeRemoveTwo(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -993,48 +1064,46 @@ export default {
     removeThree(files, fileList) {
       //确认删除后，数组清空,因为只有一个文件
       this.fileThree = [];
-      this.threeChoose.picUrl="";
+      this.threeChoose.picUrl = "";
     },
     beforeRemoveThree(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     }
   },
   created() {
-    /** 
+    /**
      * 从导购列表传入如下参数
      * 1.@guideId 导购ID
-     * 2.@status 状态 生效中，未生效，已停用，已删除，已结束，只有生效中才能延长时间 
+     * 2.@status 状态 生效中，未生效，已停用，已删除，已结束，只有生效中才能延长时间
      */
     console.log(`demo5`);
     console.log(this.$route.params);
-    if(this.$route.params.guideId){
-      this.guideId=this.$route.params.guideId;
-      this.status=this.$route.params.status;
-      if(this.status===`未生效`){
-        this.newCreate=false; //新创建的保存按钮
-        this.modifySave=true; //修改的保存按钮
-      }else if(this.status===`生效中`){
-        this.newCreate=false;
-        this.modifySave=true;
-        this.allDisabled=true;
-        this.modifyTime=false;
-      }else{
-        if(this.$route.params.text){
-          
-        }else{
-          this.newCreate=false;
-          this.modifySave=false;
-          this.allDisabled=true;
-          this.modifyTime=true;
-        };
-      };
+    if (this.$route.params.guideId) {
+      this.guideId = this.$route.params.guideId;
+      this.status = this.$route.params.status;
+      if (this.status === `未生效`) {
+        this.newCreate = false; //新创建的保存按钮
+        this.modifySave = true; //修改的保存按钮
+      } else if (this.status === `生效中`) {
+        this.newCreate = false;
+        this.modifySave = true;
+        this.allDisabled = true;
+        this.modifyTime = false;
+      } else {
+        if (!this.$route.params.text) {
+          this.newCreate = false;
+          this.modifySave = false;
+          this.allDisabled = true;
+          this.modifyTime = true;
+        }
+      }
       this.fromShoppingGuide();
-    }else{
+    } else {
       this.allArea();
-    };
+    }
     // this.guideId=this.$route.params.guideId;
     // this.dataRequest();
-  },
+  }
 };
 </script>
 

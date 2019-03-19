@@ -175,7 +175,7 @@ export default {
       console.log(currentRow);
       let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
       this.$router.push({
-        name:`addShopping`,
+        name:`addshopping`,
         params:{
           guideId,
           status,
@@ -188,7 +188,7 @@ export default {
       console.log(currentRow);
       let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
       this.$router.push({
-        name:`addShopping`,
+        name:`addshopping`,
         params:{
           guideId,
           status,
@@ -200,7 +200,7 @@ export default {
       console.log(currentRow);
       let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
       this.$router.push({
-        name:`addShopping`,
+        name:`addshopping`,
         params:{
           guideId,
           status,
@@ -211,7 +211,7 @@ export default {
     resEdit(currentRow,text){
       let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
       this.$router.push({
-        name:`addShopping`,
+        name:`addshopping`,
         params:{
           guideId,
           status,

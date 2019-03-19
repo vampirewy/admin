@@ -45,7 +45,7 @@ import { guideAllArea } from "@/api/headerBar";
 import { guideDetails } from "@/api/shoppingGuide";
 // import { create } from "@/api/shoppingGuide";
 export default {
-  name: "addShopping",
+  name: "addshopping",
   components: {
     demoOne,
     demoTwo,
@@ -216,9 +216,10 @@ export default {
         this.showResourceThree=false;
         this.showResourceFour=false;
       };
-    } else {
-      this.allAreaName();
     };
+    // else {
+    //   this.allAreaName();
+    // };
   }
 };
 </script>

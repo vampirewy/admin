@@ -23,13 +23,15 @@ export default new Router({
           component: ShoppingGuide
         }, {
           path: "/addshopping",
-          name: "addShopping",
+          name: "addshopping",
           meta: ['导购管理', '导购设置'],
+          // component: () => import( /* webpackChunkName: "addShopping" */ "./views/shoppingGuide/addShopping.vue")
           component: AddShopping
         }, {
           path: "/specialguide",
           name: "specialGuide",
           meta: ['专题管理', '专题列表'],
+          // component: () => import( /* webpackChunkName: "specialGuide" */ "./views/specialGuide/specialGuide.vue")
           component: SpecialGuide
         },
         // }, {
@@ -42,12 +44,14 @@ export default new Router({
           path: '/specialinfor',
           name: 'infor',
           meta: ['专题管理', '信息'],
+          // component: () => import( /* webpackChunkName: "specialInfor" */ "./views/specialGuide/aboutSpecial/specialInfor.vue")
           component: SpecialInfor
         },
         {
           path: '/specialgood',
           name: 'goods',
           meta: ['专题管理', '商品'],
+          // component: () => import( /* webpackChunkName: "specialGood" */ "./views/specialGuide/aboutSpecial/specialGood.vue")
           component: SpecialGood
         }
       ]

@@ -1857,14 +1857,12 @@ export default {
         this.allDisabled = true;
         this.modifyTime = false;
       } else {
-        if (this.$route.params.text) {
-        } else {
+        if (!this.$route.params.text) {
           this.newCreate = false;
           this.modifySave = false;
           this.allDisabled = true;
-          this.modifyTime = true;
-        }
-      }
+        };
+      };
       this.fromShoppingGuide();
     } else {
       this.allArea();
