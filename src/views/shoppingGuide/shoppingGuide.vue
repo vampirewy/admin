@@ -3,8 +3,8 @@
     <HeaderBar @statusAreaName="shoppingGuideRequest"></HeaderBar>
     <div class="lists">
       <el-table :data="shoppingGuideLists" style="width: 100%" border stripe>
-        <el-table-column align="center" type="index"></el-table-column>
-        <el-table-column align="center" prop="guideId" label="id" width="50"></el-table-column>
+        <!-- <el-table-column align="center" type="index"></el-table-column> -->
+        <el-table-column align="center" prop="guideId" label="导购ID" width="75"></el-table-column>
         <el-table-column align="center" prop="templateCodeText" label="模版" width="60"></el-table-column>
         <el-table-column align="center" prop="guideName" label="名称"></el-table-column>
         <el-table-column align="center" prop="guideNameDisplay" label="显示名称"></el-table-column>

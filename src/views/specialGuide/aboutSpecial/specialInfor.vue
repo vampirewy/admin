@@ -85,7 +85,7 @@
                 :disabled="allDisabled"
               >
                 <el-button type="primary" size="mini">上传图片</el-button>
-                <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+                <span slot="tip" class="el-upload__tip m_l_10">只能上传1张图片</span>
               </el-upload>
             </div>
             <div class="bototm">
@@ -1509,5 +1509,8 @@ export default {
 }
 .m_b_10 {
   margin-bottom: 10px;
+}
+.m_l_10{
+  margin-left:10px;
 }
 </style>

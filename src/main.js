@@ -5,7 +5,6 @@ import store from "./store";
 import './plugins/element.js';
 import 'normalize.css';
 import './less/global.css';
-import axios from 'axios';
 
 Vue.config.productionTip = false;
 

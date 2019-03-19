@@ -73,7 +73,7 @@
             :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
-            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+            <span slot="tip" class="el-upload__tip m_l_10">只能上传1张图片</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="跳转页面" class="show">
@@ -132,7 +132,7 @@
             :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
-            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+            <span slot="tip" class="el-upload__tip m_l_10">只能上传1张图片</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="跳转页面" class="show">
@@ -191,7 +191,7 @@
             :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
-            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+            <span slot="tip" class="el-upload__tip m_l_10">只能上传1张图片</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="跳转页面" class="show">
@@ -250,7 +250,7 @@
             :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
-            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+            <span slot="tip" class="el-upload__tip m_l_10">只能上传1张图片</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="跳转页面" class="show">
@@ -309,7 +309,7 @@
             :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
-            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+            <span slot="tip" class="el-upload__tip m_l_10">只能上传1张图片</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="跳转页面" class="show">
@@ -368,7 +368,7 @@
             :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
-            <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
+            <span slot="tip" class="el-upload__tip m_l_10">只能上传1张图片</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="跳转页面" class="show">
@@ -1615,5 +1615,8 @@ message: res.msg,type:`error`
 }
 .text_align {
   text-align: left;
+}
+.m_l_10{
+  margin-left:10px;
 }
 </style>

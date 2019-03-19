@@ -4,7 +4,8 @@
     <el-row>
       <el-col :span="24">
         <el-table :data="specialGuideLists" stripe style="width:100%" border>
-          <el-table-column align="center" type="index"></el-table-column>
+          <!-- <el-table-column align="center" type="index"></el-table-column> -->
+          <el-table-column align="center" prop="topicId" label="专题ID" width="75"></el-table-column>
           <el-table-column prop="picUrl" label="专详图片" align="center" width="100">
             <template scope="scope">
               <img :src="scope.row.picUrl?scope.row.picUrl:''" style="width:80px;">
