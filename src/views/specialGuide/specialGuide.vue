@@ -43,7 +43,7 @@
                 type="text"
                 v-if="scope.row.status==='已停用'||scope.row.status==='已结束'||scope.row.status==='已删除'"
                 @click="reEdit(scope.row,'重新编辑')"
-              >重新编辑</el-button>
+              >重新添加</el-button>
               <el-button
                 @click="top(scope.row)"
                 type="text"
@@ -76,6 +76,7 @@ import { Message } from "element-ui";
 import HeaderBar from "@/components/headerBar.vue";
 import { specialGuide, del, stop, topGun } from "@/api/specialGuide";
 export default {
+  name:"specialguide",
   components: {
     HeaderBar
   },

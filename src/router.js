@@ -3,11 +3,11 @@ import Router from "vue-router";
 // import Home from "./views/Home.vue";
 import Layout from "./views/layout/layout.vue";
 import ShoppingGuide from "./views/shoppingGuide/shoppingGuide.vue";
-import AddShopping from "./views/shoppingGuide/addShopping.vue";
-import SpecialGuide from "./views/specialGuide/specialGuide.vue";
-import AddSpecial from "./views/specialGuide/addSpecial.vue";
-import SpecialInfor from "@/views/specialGuide/aboutSpecial/specialInfor.vue";
-import SpecialGood from "@/views/specialGuide/aboutSpecial/specialGood.vue";
+// import AddShopping from "./views/shoppingGuide/addShopping.vue";
+// import SpecialGuide from "./views/specialGuide/specialGuide.vue";
+// import AddSpecial from "./views/specialGuide/addSpecial.vue";
+// import SpecialInfor from "@/views/specialGuide/aboutSpecial/specialInfor.vue";
+// import SpecialGood from "@/views/specialGuide/aboutSpecial/specialGood.vue";
 Vue.use(Router);
 
 export default new Router({
@@ -22,17 +22,17 @@ export default new Router({
           meta: ['导购管理', '导购列表'],
           component: ShoppingGuide
         }, {
-          path: "/addshopping",
+          path: "addshopping",
           name: "addshopping",
           meta: ['导购管理', '导购设置'],
-          // component: () => import( /* webpackChunkName: "addShopping" */ "./views/shoppingGuide/addShopping.vue")
-          component: AddShopping
+          component: () => import( /* webpackChunkName: "addShopping" */ "./views/shoppingGuide/addshopping.vue")
+          // component: AddShopping
         }, {
-          path: "/specialguide",
+          path: "specialguide",
           name: "specialGuide",
           meta: ['专题管理', '专题列表'],
-          // component: () => import( /* webpackChunkName: "specialGuide" */ "./views/specialGuide/specialGuide.vue")
-          component: SpecialGuide
+          component: () => import( /* webpackChunkName: "specialGuide" */ "./views/specialGuide/specialguide.vue")
+          // component: SpecialGuide
         },
         // }, {
         //   path: "/addspecial",
@@ -41,30 +41,20 @@ export default new Router({
         //   component: AddSpecial
         // },
         {
-          path: '/specialinfor',
-          name: 'infor',
+          path: 'specialinfor',
+          name: 'infor', 
           meta: ['专题管理', '信息'],
-          // component: () => import( /* webpackChunkName: "specialInfor" */ "./views/specialGuide/aboutSpecial/specialInfor.vue")
-          component: SpecialInfor
+          component: () => import( /* webpackChunkName: "specialInfor" */ "./views/specialGuide/aboutSpecial/specialinfor.vue")
+          // component: SpecialInfor
         },
         {
-          path: '/specialgood',
+          path: 'specialgood', 
           name: 'goods',
           meta: ['专题管理', '商品'],
-          // component: () => import( /* webpackChunkName: "specialGood" */ "./views/specialGuide/aboutSpecial/specialGood.vue")
-          component: SpecialGood
+          component: () => import( /* webpackChunkName: "specialGood" */ "./views/specialGuide/aboutSpecial/specialgood.vue")
+          // component: SpecialGood
         }
       ]
     }
-
-    // {
-    //   path: "/about",
-    //   name: "about",
-    //   // route level code-splitting
-    //   // this generates a separate chunk (about.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () =>
-    //     import(/* webpackChunkName: "about" */ "./views/About.vue")
-    // }
   ]
 });
