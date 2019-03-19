@@ -11,7 +11,7 @@
         <el-table-column align="center" prop="traNames" label="商圈"></el-table-column>
         <el-table-column align="center" prop="sortIndex" label="排序">
           <template slot-scope="scope">
-            <el-input  v-model="scope.row.sortIndex" size="mini" @blur="sort(scope.row)"></el-input>
+            <el-input v-model="scope.row.sortIndex" size="mini" @blur="sort(scope.row)"></el-input>
           </template>
         </el-table-column>
         <el-table-column align="center" prop="startTime" label="生效时间"></el-table-column>
@@ -21,11 +21,7 @@
         <el-table-column align="center" prop="status" label="状态"></el-table-column>
         <el-table-column align="center" prop="operation" label="操作">
           <template slot-scope="scope">
-            <el-button
-              @click="edit(scope.row)"
-              type="text"
-              v-if="scope.row.status==='未生效'"
-            >编辑</el-button>
+            <el-button @click="edit(scope.row)" type="text" v-if="scope.row.status==='未生效'">编辑</el-button>
             <el-button type="text" v-if="scope.row.status==='未生效'" @click="del(scope.row)">删除</el-button>
             <el-button type="text" v-if="scope.row.status==='生效中'" @click="delay(scope.row)">延长时间</el-button>
             <el-button type="text" v-if="scope.row.status==='生效中'" @click="stop(scope.row)">停用</el-button>
@@ -84,16 +80,16 @@ export default {
     };
   },
   methods: {
-    shoppingGuideRequest(traId, statusLists, guideName,page) {
+    shoppingGuideRequest(traId, statusLists, guideName, page) {
       console.log(`==============================`);
-      console.log(traId, statusLists, guideName,page);
+      console.log(traId, statusLists, guideName, page);
       console.log(`==============================`);
       this.traId = traId;
       this.statusLists = statusLists;
       this.guideName = guideName;
       let params = {
         statusArray: statusLists,
-        pageNum: page||this.pageNum,
+        pageNum: page || this.pageNum,
         pageSize: this.pageSize,
         traId: traId,
         guideName: guideName
@@ -173,50 +169,66 @@ export default {
     edit(currentRow) {
       console.log(`当前编辑行`);
       console.log(currentRow);
-      let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
+      let [guideId, status, templateCode] = [
+        currentRow.guideId,
+        currentRow.status,
+        currentRow.templateCode
+      ];
       this.$router.push({
-        name:`addshopping`,
-        params:{
+        name: `addshopping`,
+        params: {
           guideId,
           status,
           templateCode
         }
       });
     },
-    delay(currentRow){
+    delay(currentRow) {
       console.log(`当前需延时的行`);
       console.log(currentRow);
-      let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
+      let [guideId, status, templateCode] = [
+        currentRow.guideId,
+        currentRow.status,
+        currentRow.templateCode
+      ];
       this.$router.push({
-        name:`addshopping`,
-        params:{
+        name: `addshopping`,
+        params: {
           guideId,
           status,
           templateCode
         }
       });
     },
-    see(currentRow){
+    see(currentRow) {
       console.log(currentRow);
-      let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
+      let [guideId, status, templateCode] = [
+        currentRow.guideId,
+        currentRow.status,
+        currentRow.templateCode
+      ];
       this.$router.push({
-        name:`addshopping`,
-        params:{
+        name: `addshopping`,
+        params: {
           guideId,
           status,
           templateCode
         }
       });
     },
-    resEdit(currentRow,text){
-      let [guideId,status,templateCode]=[currentRow.guideId,currentRow.status,currentRow.templateCode];
+    resEdit(currentRow, text) {
+      let [guideId, status, templateCode] = [
+        currentRow.guideId,
+        currentRow.status,
+        currentRow.templateCode
+      ];
       this.$router.push({
-        name:`addshopping`,
-        params:{
+        name: `addshopping`,
+        params: {
           guideId,
           status,
           templateCode,
-          text:text
+          text: text
         }
       });
     },
@@ -312,8 +324,8 @@ export default {
   created() {
     this.shoppingGuideRequest();
   },
-  updated(){
-    window.scrollTo(0,0);
+  updated() {
+    window.scrollTo(0, 0);
   }
 };
 </script>

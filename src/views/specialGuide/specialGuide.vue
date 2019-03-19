@@ -27,7 +27,11 @@
             <template slot-scope="scope">
               <el-button type="text" v-if="scope.row.status==='未生效'" @click="edit(scope.row)">编辑</el-button>
               <el-button type="text" v-if="scope.row.status==='未生效'" @click="del(scope.row)">删除</el-button>
-              <el-button type="text" v-if="scope.row.status==='生效中'" @click="delayTime(scope.row)">延长时间</el-button>
+              <el-button
+                type="text"
+                v-if="scope.row.status==='生效中'"
+                @click="delayTime(scope.row)"
+              >延长时间</el-button>
               <el-button type="text" v-if="scope.row.status==='生效中'" @click="stop(scope.row)">停用</el-button>
               <el-button
                 type="text"
@@ -99,7 +103,7 @@ export default {
      * 7.startTime 生效时间
      * 8.status 状态 0-末生效,1-生效中,2-已结束,3-已停用,4-已删除
      * 9.goodsNum 专题商品
-     * 
+     *
      * headerBar参数
      * @traId  商圈ID
      * @statusLists 未生效，已生效等状态
@@ -139,8 +143,10 @@ export default {
                     ? "已删除"
                     : "未生效";
                 // el.recommend = el.recommend ? `取消置顶` : `推荐置顶`;
-                el.recommend ? (el.upText = `取消置顶`) : (el.upText = `推荐置顶`);
-                el.topicTypeText=el.topicTypeText?el.topicTypeText:'--';
+                el.recommend
+                  ? (el.upText = `取消置顶`)
+                  : (el.upText = `推荐置顶`);
+                el.topicTypeText = el.topicTypeText ? el.topicTypeText : "--";
               });
             this.specialGuideLists = res.data.body.pageData;
             console.log(`数据为`);
@@ -159,37 +165,40 @@ export default {
     edit(currentRow) {
       console.log(`当前选中行`);
       console.log(currentRow);
-      this.$router.push({name:'infor',params:{
-        topicId:currentRow.topicId,
-        status:currentRow.status
-      }});
-    },
-    delayTime(currentRow){
       this.$router.push({
-        name:'infor',
-        params:{
-          topicId:currentRow.topicId,
-          status:currentRow.status
+        name: "infor",
+        params: {
+          topicId: currentRow.topicId,
+          status: currentRow.status
         }
       });
     },
-    see(currentRow){
+    delayTime(currentRow) {
       this.$router.push({
-        name:'infor',
-        params:{
-          topicId:currentRow.topicId,
-          status:currentRow.status
+        name: "infor",
+        params: {
+          topicId: currentRow.topicId,
+          status: currentRow.status
+        }
+      });
+    },
+    see(currentRow) {
+      this.$router.push({
+        name: "infor",
+        params: {
+          topicId: currentRow.topicId,
+          status: currentRow.status
         }
       });
     },
     //调用创建专题信息接口，后台生成新信息条目
-    reEdit(currentRow,editText){
+    reEdit(currentRow, editText) {
       this.$router.push({
-        name:'infor',
-        params:{
-          topicId:currentRow.topicId,
-          status:currentRow.status,
-          text:editText
+        name: "infor",
+        params: {
+          topicId: currentRow.topicId,
+          status: currentRow.status,
+          text: editText
         }
       });
     },
@@ -292,7 +301,8 @@ export default {
             );
           } else {
             this.$message({
-              message: res.data.msg
+              message: res.data.msg,
+              type: `error`
             });
           }
         },
@@ -328,8 +338,8 @@ export default {
   created() {
     this.specialGuideRequest();
   },
-  updated(){
-    window.scrollTo(0,0);
+  updated() {
+    window.scrollTo(0, 0);
   }
 };
 </script>

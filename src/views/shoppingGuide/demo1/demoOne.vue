@@ -337,7 +337,7 @@ export default {
     handleRemove(files, fileList) {
       //确认删除后，数组清空,因为只有一个文件
       this.ruleForm.fileList = [];
-      this.ruleForm.submitImg="";
+      this.ruleForm.submitImg = "";
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -349,7 +349,8 @@ export default {
         this.ruleForm.submitImg = res.body;
       } else {
         this.$message({
-          message: res.msg
+          message: res.msg,
+          type: `error`
         });
       }
     },
@@ -418,12 +419,14 @@ export default {
               if (res.data.statusCode === 2000) {
                 console.log(res.data.body);
                 this.$message({
-                  message: `创建成功`
+                  message: `创建成功`,
+                  type: `success`
                 });
                 this.$router.push("/shoppingGuide");
               } else {
                 this.$message({
-                  message: res.data.msg
+                  message: res.data.msg,
+                  type: `error`
                 });
               }
             });
@@ -459,7 +462,7 @@ export default {
           lists.push({ checked: el.checked, traId: el.traId });
         });
         let params = {
-          guideId:this.guideId,
+          guideId: this.guideId,
           templateCode: "T1",
           guideNameDisplay: this.ruleForm.showName ? 1 : 0, //是否名称展示
           startTime: this.ruleForm.startTime,
@@ -488,18 +491,20 @@ export default {
               ? this.inputGoodsNum
               : ""
         };
-        modifyGuide(params).then(res=>{
-          if(res.data.statusCode===2000){
-            this.$message({ message: `修改成功`, type: `success` });
+        modifyGuide(params).then(
+          res => {
+            if (res.data.statusCode === 2000) {
+              this.$message({ message: `修改成功`, type: `success` });
               setTimeout(() => {
                 this.$router.push("/shoppingGuide");
               }, 500);
-          }else{
-            this.$message({message:res.data.msg,type:`error`});
-          };
-        },error=>{});
-
-      };
+            } else {
+              this.$message({ message: res.data.msg, type: `error` });
+            }
+          },
+          error => {}
+        );
+      }
     },
     //提交信息
     subData() {
@@ -560,8 +565,8 @@ export default {
           this.modifySave = false;
           this.allDisabled = true;
           this.modifyTime = true;
-        };
-      };
+        }
+      }
       this.fromShoppingGuide();
     } else {
       this.allArea();

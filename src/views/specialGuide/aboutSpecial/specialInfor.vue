@@ -579,7 +579,7 @@ export default {
         this.ruleForm.picUrl = res.body;
       } else {
         this.$message({
-          message: res.msg
+          message: res.msg,type:`error`
         });
       }
     },
@@ -695,9 +695,9 @@ export default {
                       error => {}
                     );
                   })
-                  .catch(() => {
-                    this.$message({ type: "info", message: "已取消删除" });
-                  });
+                  // .catch(() => {
+                  //   this.$message({ type: "info", message: "已取消删除" });
+                  // });
               } else {
                 createActivity(params).then(
                   res => {

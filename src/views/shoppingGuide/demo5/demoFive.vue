@@ -759,7 +759,7 @@ export default {
               this.$router.push("/shoppingGuide");
             } else {
               this.$message({
-                message: res.data.msg
+                message: res.data.msg,type:`error`
               });
             }
           },
@@ -771,22 +771,22 @@ export default {
     checkActivityData1() {
       let promise = new Promise((resolve, reject) => {
         if (this.oneChoose.picUrl === "") {
-          this.$message({ message: `请上传活动一的图片` });
+          this.$message({ message: `请上传活动一的图片`,type:`error` });
         } else {
           if (this.oneChoose.type === "APP") {
             if (this.oneChoose.selectText == "") {
-              this.$message({ message: `请选择活动一的app页面` });
+              this.$message({ message: `请选择活动一的app页面`,type:`error` });
             } else {
               return resolve(`通过活动一的app页面`);
             }
           } else if (this.oneChoose.type === "H5") {
             if (this.oneChoose.path == "") {
-              this.$message({ message: `请填写活动一的h5页面参数` });
+              this.$message({ message: `请填写活动一的h5页面参数`,type:`error` });
             } else {
               return resolve(`通过活动一的h5页面参数`);
             }
           } else {
-            this.$message({ message: `请选择活动一的跳转页面` });
+            this.$message({ message: `请选择活动一的跳转页面`,type:`error` });
           }
         }
       });
@@ -795,22 +795,22 @@ export default {
     checkActivityData2() {
       let promise = new Promise((resolve, reject) => {
         if (this.twoChoose.picUrl === "") {
-          this.$message({ message: `请上传活动二的图片` });
+          this.$message({ message: `请上传活动二的图片`,type:`error` });
         } else {
           if (this.twoChoose.type === "APP") {
             if (this.twoChoose.selectText == "") {
-              this.$message({ message: `请选择活动二的app页面` });
+              this.$message({ message: `请选择活动二的app页面`,type:`error` });
             } else {
               return resolve(`通过活动二的app页面`);
             }
           } else if (this.twoChoose.type === "H5") {
             if (this.twoChoose.path == "") {
-              this.$message({ message: `请填写活动二的h5页面参数` });
+              this.$message({ message: `请填写活动二的h5页面参数`,type:`error` });
             } else {
               return resolve(`通过活动二的h5页面参数`);
             }
           } else {
-            this.$message({ message: `请选择活动二的跳转页面` });
+            this.$message({ message: `请选择活动二的跳转页面`,type:`error` });
           }
         }
       });
@@ -819,22 +819,22 @@ export default {
     checkActivityData3() {
       let promise = new Promise((resolve, reject) => {
         if (this.threeChoose.picUrl === "") {
-          this.$message({ message: `请上传活动三的图片` });
+          this.$message({ message: `请上传活动三的图片`,type:`error` });
         } else {
           if (this.threeChoose.type === "APP") {
             if (this.threeChoose.selectText == "") {
-              this.$message({ message: `请选择活动三的app页面` });
+              this.$message({ message: `请选择活动三的app页面`,type:`error` });
             } else {
               return resolve(`通过活动三的app页面`);
             }
           } else if (this.threeChoose.type === "H5") {
             if (this.threeChoose.path == "") {
-              this.$message({ message: `请填写活动三的h5页面参数` });
+              this.$message({ message: `请填写活动三的h5页面参数`,type:`error` });
             } else {
               return resolve(`通过活动三的h5页面参数`);
             }
           } else {
-            this.$message({ message: `请选择活动三的跳转页面` });
+            this.$message({ message: `请选择活动三的跳转页面`,type:`error` });
           }
         }
       });
@@ -1015,8 +1015,7 @@ export default {
         this.fileOne.push({ name: res.body, url: res.body });
         this.oneChoose.picUrl = res.body;
       } else {
-        this.$message({
-          $message: res.msg
+        this.$message({message: res.msg,type:`error`
         });
       }
     },
@@ -1037,8 +1036,7 @@ export default {
         this.fileTwo.push({ name: res.body, url: res.body });
         this.twoChoose.picUrl = res.body;
       } else {
-        this.$message({
-          $message: res.msg
+        this.$message({message: res.msg,type:`error`
         });
       }
     },
@@ -1056,8 +1054,7 @@ export default {
         this.fileThree.push({ name: res.body, url: res.body });
         this.threeChoose.picUrl = res.body;
       } else {
-        this.$message({
-          $message: res.msg
+        this.$message({message: res.msg,type:`error`
         });
       }
     },

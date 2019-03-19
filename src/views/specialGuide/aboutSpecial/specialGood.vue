@@ -372,8 +372,8 @@ export default {
             });
             this.search();
           } else {
-            this.$message({message:res.data.msg,type:`error`});
-          };
+            this.$message({ message: res.data.msg, type: `error` });
+          }
         },
         error => {}
       );
