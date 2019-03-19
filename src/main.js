@@ -26,7 +26,7 @@ new Vue({
   created() {
     localStorage.setItem(`sessionId`, sessionId);
     localStorage.setItem(`cityCode`, cityCode);
-  },
+  }
 }).$mount("#app");
 router.afterEach(() => {
   window.scrollTo(0, 0);
