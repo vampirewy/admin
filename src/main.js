@@ -29,3 +29,6 @@ new Vue({
     localStorage.setItem(`cityCode`, cityCode);
   },
 }).$mount("#app");
+router.afterEach(() => {
+  window.scrollTo(0, 0);
+});

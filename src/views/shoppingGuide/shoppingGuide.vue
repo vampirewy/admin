@@ -311,6 +311,9 @@ export default {
   },
   created() {
     this.shoppingGuideRequest();
+  },
+  updated(){
+    window.scrollTo(0,0);
   }
 };
 </script>

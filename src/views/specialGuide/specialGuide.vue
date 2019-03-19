@@ -139,9 +139,8 @@ export default {
                     ? "已删除"
                     : "未生效";
                 // el.recommend = el.recommend ? `取消置顶` : `推荐置顶`;
-                el.recommend
-                  ? (el.upText = `取消置顶`)
-                  : (el.upText = `推荐置顶`);
+                el.recommend ? (el.upText = `取消置顶`) : (el.upText = `推荐置顶`);
+                el.topicTypeText=el.topicTypeText?el.topicTypeText:'--';
               });
             this.specialGuideLists = res.data.body.pageData;
             console.log(`数据为`);
@@ -328,6 +327,9 @@ export default {
   },
   created() {
     this.specialGuideRequest();
+  },
+  updated(){
+    window.scrollTo(0,0);
   }
 };
 </script>
