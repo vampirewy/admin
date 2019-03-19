@@ -13,8 +13,8 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <span class="ml_10">欢迎使用</span>
-        <span class="ml_10">退出</span>
+        <!-- <span class="ml_10">欢迎使用</span> -->
+        <!-- <span class="ml_10">退出</span> -->
       </div>
     </el-header>
     <div class="container">
