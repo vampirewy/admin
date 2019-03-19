@@ -8,11 +8,11 @@
       class="demo-ruleForm"
     >
       <el-form-item label="名称展示" class="show" prop="showName">
-        <el-checkbox v-model="ruleForm.showName" @change="isShow()">展示</el-checkbox>
+        <el-checkbox :disabled="allDisabled" v-model="ruleForm.showName" @change="isShow()">展示</el-checkbox>
       </el-form-item>
 
       <el-form-item label="导购名称" prop="name" class="show">
-        <el-input v-model="ruleForm.name" placeholder="请输入导购名称"></el-input>
+        <el-input :disabled="allDisabled" v-model="ruleForm.name" placeholder="请输入导购名称"></el-input>
       </el-form-item>
       <el-form-item label="商圈" prop="type" class="show">
         <el-checkbox-group v-model="ruleForm.type" @change="chooseArea(ruleForm.type)">
@@ -22,6 +22,7 @@
             :key="index"
             name="type"
             @change="chooseArea1(item)"
+            :disabled="allDisabled"
           ></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -36,6 +37,7 @@
               default-time="16:00:00"
               @change="startTime(ruleForm.startTime)"
               value-format="yyyy-MM-dd HH:mm:ss"
+              :disabled="allDisabled"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -51,6 +53,7 @@
               default-time="16:00:00"
               value-format="yyyy-MM-dd HH:mm:ss"
               @change="endTime(ruleForm.endTime)"
+              :disabled="modifyTime"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -67,6 +70,7 @@
           :limit="1"
           :file-list="ruleForm.fileList"
           name="file"
+          :disabled="allDisabled"
         >
           <el-button type="primary" size="mini">上传图片</el-button>
           <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -79,6 +83,7 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入专题名称"
             @select="selectTopicName"
+            :disabled="allDisabled"
           ></el-autocomplete>
           <!-- <el-input v-model="ruleForm.path" placeholder="请输入专题名称"></el-input> -->
           <el-button
@@ -91,13 +96,25 @@
       </el-form-item>
       <el-form-item label="是否展示商品" class="show" prop="goods">
         <el-radio-group v-model="ruleForm.goods" @change="showGoods(ruleForm.goods)">
-          <el-radio v-for="(item,index) in showLists" :label="item.name" :key="index"></el-radio>
+          <el-radio
+            :disabled="allDisabled"
+            v-for="(item,index) in showLists"
+            :label="item.name"
+            :key="index"
+          ></el-radio>
         </el-radio-group>
-        <el-input placeholder="请输入整数" v-model="inputGoodsNum" v-if="chooseGoods" @blur="showGoodsNum()"></el-input>
+        <el-input
+          :disabled="allDisabled"
+          placeholder="请输入整数"
+          v-model="inputGoodsNum"
+          v-if="chooseGoods"
+          @blur="showGoodsNum()"
+        ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-        <el-button @click="cancel()">取消</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')" v-if="newCreate">保存</el-button>
+        <el-button type="primary" @click="modifyForm('ruleForm')" v-if="modifySave">保存</el-button>
+        <el-button @click="cancel()" v-if="newCreate">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -106,16 +123,27 @@
 <script>
 import { Message } from "element-ui";
 import { guideAllArea } from "@/api/headerBar";
-import { create, checkSpecial } from "@/api/shoppingGuide";
-import { clearTimeout, setTimeout } from "timers";
+import {
+  create,
+  guideDetails,
+  modifyGuide,
+  onlyDelayTime,
+  checkSpecial
+} from "@/api/shoppingGuide";
+import { setTimeout } from "timers";
 export default {
   name: "demoOne",
-  props: {
-    areaLists: Array
-  },
+  // props: {
+  //   areaLists: Array
+  // },
   data() {
     return {
-      reg:/^[+]?\d*$/,
+      newCreate: true, //新建保存
+      modifySave: false, //修改保存
+      modifyTime: false, //只可修改结束时间
+      allDisabled: false, //全部禁用
+      areaLists: [], //商圈
+      reg: /^[+]?\d*$/,
       timer: null,
       headers: { sessionId: localStorage.getItem(`sessionId`) }, //图片上传的参数
       upImgUrl: `${process.env.VUE_APP_BASE_URL}support/uploadPic`,
@@ -202,6 +230,66 @@ export default {
     };
   },
   methods: {
+    allArea() {
+      guideAllArea().then(
+        res => {
+          console.log(res.data);
+          if (res.data.statusCode === 2000) {
+            this.areaLists = res.data.body;
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    },
+    fromShoppingGuide() {
+      let params = { guideId: this.guideId };
+      guideDetails(params).then(
+        res => {
+          if (res.data.statusCode === 2000) {
+            console.log(res.data.body);
+            this.areaLists = res.data.body.traSelectionList;
+            this.areaLists.forEach(el => {
+              if (el.checked) {
+                this.ruleForm.type.push(el.traName);
+              }
+            });
+            this.ruleForm.startTime = res.data.body.startTime;
+            this.ruleForm.endTime = res.data.body.endTime;
+            this.ruleForm.name = res.data.body.guideName;
+            this.ruleForm.showName = res.data.body.guideNameDisplay
+              ? true
+              : false;
+            if (res.data.body.showGoodsCount === 0) {
+              this.ruleForm.goods = `不展示`;
+            } else if (res.data.body.showGoodsCount === 3) {
+              this.ruleForm.goods = `前3个`;
+            } else if (res.data.body.showGoodsCount === 6) {
+              this.ruleForm.goods = `前6个`;
+            } else if (res.data.body.showGoodsCount === 9) {
+              this.ruleForm.goods = `前9个`;
+            } else {
+              this.ruleForm.goods = `自定义`;
+              this.inputGoodsNum = res.data.body.showGoodsCount;
+              this.chooseGoods = true;
+            }
+            if (res.data.body.actionList.length) {
+              this.ruleForm.fileList.push({
+                name: res.data.body.actionList[0].picUrl,
+                value: res.data.body.actionList[0].picUrl
+              });
+              this.ruleForm.submitImg = res.data.body.actionList[0].picUrl;
+              this.ruleForm.pathValue =
+                res.data.body.actionList[0].actionParamName;
+              this.ruleForm.path = res.data.body.actionList[0].actionParam;
+            }
+          } else {
+          }
+        },
+        error => {}
+      );
+    },
     isShow() {
       console.log(`是否展示`);
       console.log(this.ruleForm.showName);
@@ -249,6 +337,7 @@ export default {
     handleRemove(files, fileList) {
       //确认删除后，数组清空,因为只有一个文件
       this.ruleForm.fileList = [];
+      this.ruleForm.submitImg="";
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -277,11 +366,11 @@ export default {
         this.chooseGoods = false;
       }
     },
-    showGoodsNum(){
-      if(!this.reg.test(this.inputGoodsNum)){
-        this.$message({message:`请输入正整数`,type:`error`});
-        this.inputGoodsNum='';
-      };
+    showGoodsNum() {
+      if (!this.reg.test(this.inputGoodsNum)) {
+        this.$message({ message: `请输入正整数`, type: `error` });
+        this.inputGoodsNum = "";
+      }
     },
     querySearchAsync(queryString, fn) {
       this.searchTopic(queryString, fn);
@@ -345,6 +434,73 @@ export default {
         }
       });
     },
+    //修改信息
+    modifyForm() {
+      if (this.status === `生效中`) {
+        let [endTime, guideId] = [this.ruleForm.endTime, this.guideId];
+        onlyDelayTime({ endTime, guideId }).then(
+          res => {
+            if (res.data.statusCode === 2000) {
+              this.$message({ message: `修改成功`, type: `success` });
+              setTimeout(() => {
+                this.$router.push("/shoppingGuide");
+              }, 500);
+            } else {
+              this.$message({ message: res.data.msg, type: `error` });
+            }
+          },
+          error => {
+            console.log(error);
+          }
+        );
+      } else {
+        let lists = [];
+        this.areaLists.forEach(el => {
+          lists.push({ checked: el.checked, traId: el.traId });
+        });
+        let params = {
+          guideId:this.guideId,
+          templateCode: "T1",
+          guideNameDisplay: this.ruleForm.showName ? 1 : 0, //是否名称展示
+          startTime: this.ruleForm.startTime,
+          endTime: this.ruleForm.endTime,
+          guideName: this.ruleForm.name, //导购名称
+          traSelectionList: lists, //选择的商圈
+          actionList: [
+            {
+              actionType: `app`,
+              actionContent: `16`,
+              picUrl: this.ruleForm.submitImg,
+              actionParam: this.ruleForm.path //跳转页面
+            }
+          ],
+          //只针对模版1
+          showGoodsCount:
+            this.ruleForm.goods === `不展示`
+              ? "0"
+              : this.ruleForm.goods === `前3个`
+              ? "3"
+              : this.ruleForm.goods === `前6个`
+              ? "6"
+              : this.ruleForm.goods === `前9个`
+              ? "9"
+              : this.ruleForm.goods === `自定义`
+              ? this.inputGoodsNum
+              : ""
+        };
+        modifyGuide(params).then(res=>{
+          if(res.data.statusCode===2000){
+            this.$message({ message: `修改成功`, type: `success` });
+              setTimeout(() => {
+                this.$router.push("/shoppingGuide");
+              }, 500);
+          }else{
+            this.$message({message:res.data.msg,type:`error`});
+          };
+        },error=>{});
+
+      }
+    },
     //提交信息
     subData() {
       let lists = [];
@@ -353,15 +509,6 @@ export default {
       });
       let params = {
         templateCode: "T1",
-        // this.ruleForm.resource === `模版1`
-        //   ? `T1`
-        //   : this.ruleForm.resource === `模版2`
-        //   ? `T2`
-        //   : this.ruleForm.resource === `模版3`
-        //   ? `T3`
-        //   : this.ruleForm.resource === `模版4`
-        //   ? `T4`
-        //   : `T5`, //导购模版
         guideNameDisplay: this.ruleForm.showName ? 1 : 0, //是否名称展示
         startTime: this.ruleForm.startTime,
         endTime: this.ruleForm.endTime,
@@ -391,6 +538,34 @@ export default {
       };
       console.log(params);
       return create(params);
+    }
+  },
+  created() {
+    console.log(`demo1`);
+    console.log(this.$route.params);
+    if (this.$route.params.guideId) {
+      this.guideId = this.$route.params.guideId;
+      this.status = this.$route.params.status;
+      if (this.status === `未生效`) {
+        this.newCreate = false; //新创建的保存按钮
+        this.modifySave = true; //修改的保存按钮
+      } else if (this.status === `生效中`) {
+        this.newCreate = false;
+        this.modifySave = true;
+        this.allDisabled = true;
+        this.modifyTime = false;
+      } else {
+        if (this.$route.params.text) {
+        } else {
+          this.newCreate = false;
+          this.modifySave = false;
+          this.allDisabled = true;
+          this.modifyTime = true;
+        }
+      }
+      this.fromShoppingGuide();
+    } else {
+      this.allArea();
     }
   }
 };

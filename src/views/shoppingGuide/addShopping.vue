@@ -16,9 +16,9 @@
               </el-radio-group>
             </el-form-item>
           </el-form>
-          <demoOne v-if="showResourceOne" :areaLists="areaLists"></demoOne>
-          <demoTwo v-if="showResourceTwo" :areaLists="areaLists"></demoTwo>
-          <demoThree v-if="showResourceThree" :areaLists="areaLists"></demoThree>
+          <demoOne v-if="showResourceOne"></demoOne>
+          <demoTwo v-if="showResourceTwo"></demoTwo>
+          <demoThree v-if="showResourceThree"></demoThree>
           <demoFour v-if="showResourceFour"></demoFour>
           <demoFive v-if="showResourceFive"></demoFive>
         </div>

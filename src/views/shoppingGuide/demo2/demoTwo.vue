@@ -8,11 +8,11 @@
       class="demo-ruleForm"
     >
       <el-form-item label="名称展示" class="show" prop="showName">
-        <el-checkbox v-model="ruleForm.showName" @change="isShow()">展示</el-checkbox>
+        <el-checkbox :disabled="allDisabled" v-model="ruleForm.showName" @change="isShow()">展示</el-checkbox>
       </el-form-item>
 
       <el-form-item label="导购名称" prop="name" class="show">
-        <el-input v-model="ruleForm.name" placeholder="请输入导购名称"></el-input>
+        <el-input :disabled="allDisabled" v-model="ruleForm.name" placeholder="请输入导购名称"></el-input>
       </el-form-item>
       <el-form-item label="商圈" prop="type" class="show">
         <el-checkbox-group v-model="ruleForm.type" @change="chooseArea(ruleForm.type)">
@@ -22,6 +22,7 @@
             :key="index"
             name="type"
             @change="chooseArea1(item)"
+            :disabled="allDisabled"
           ></el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -36,6 +37,7 @@
               default-time="16:00:00"
               @change="startTime(ruleForm.startTime)"
               value-format="yyyy-MM-dd HH:mm:ss"
+              :disabled="allDisabled"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -51,6 +53,7 @@
               default-time="16:00:00"
               value-format="yyyy-MM-dd HH:mm:ss"
               @change="endTime(ruleForm.endTime)"
+              :disabled="modifyTime"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -67,6 +70,7 @@
             :limit="1"
             :file-list="fileOne"
             name="file"
+            :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
             <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -78,7 +82,7 @@
             @change="chooseTypes(oneChoose.type,1)"
             style="margin-right:10px;"
           >
-            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -86,6 +90,7 @@
             placeholder="请选择"
             @change="selectPage(oneChoose.selectText,1)"
             v-if="oneChoose.showSelect"
+            :disabled="allDisabled"
           >
             <el-option
               v-for="item in options"
@@ -101,6 +106,7 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入专题名称"
             @select="select1"
+            :disabled="allDisabled"
           ></el-autocomplete>
           <el-button type="primary" v-if="oneChoose.special" @click="toSpecialGuide">创建新专题</el-button>
           <el-input
@@ -108,6 +114,7 @@
             @blur="h5Path(1)"
             v-model="oneChoose.path"
             v-if="oneChoose.param"
+            :disabled="allDisabled"
           ></el-input>
         </el-form-item>
       </el-form-item>
@@ -123,6 +130,7 @@
             :limit="1"
             :file-list="fileTwo"
             name="file"
+            :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
             <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -134,7 +142,7 @@
             @change="chooseTypes(twoChoose.type,2)"
             style="margin-right:10px;"
           >
-            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -142,6 +150,7 @@
             placeholder="请选择"
             @change="selectPage(twoChoose.selectText,2)"
             v-if="twoChoose.showSelect"
+            :disabled="allDisabled"
           >
             <el-option
               v-for="item in options"
@@ -156,6 +165,7 @@
             placeholder="请输入专题名称"
             @select="select2"
             v-if="twoChoose.special"
+            :disabled="allDisabled"
           ></el-autocomplete>
           <el-button type="primary" v-if="twoChoose.special" @click="toSpecialGuide">创建新专题</el-button>
           <el-input
@@ -163,6 +173,7 @@
             @blur="h5Path(2)"
             v-model="twoChoose.path"
             v-if="twoChoose.param"
+            :disabled="allDisabled"
           ></el-input>
         </el-form-item>
       </el-form-item>
@@ -178,6 +189,7 @@
             :limit="1"
             :file-list="fileThree"
             name="file"
+            :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
             <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -189,7 +201,7 @@
             @change="chooseTypes(threeChoose.type,3)"
             style="margin-right:10px;"
           >
-            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -197,6 +209,7 @@
             placeholder="请选择"
             @change="selectPage(threeChoose.selectText,3)"
             v-if="threeChoose.showSelect"
+            :disabled="allDisabled"
           >
             <el-option
               v-for="item in options"
@@ -211,6 +224,7 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入专题名称"
             @select="select3"
+            :disabled="allDisabled"
           ></el-autocomplete>
           <el-button type="primary" v-if="threeChoose.special" @click="toSpecialGuide">创建新专题</el-button>
           <el-input
@@ -218,6 +232,7 @@
             @blur="h5Path(3)"
             v-model="threeChoose.path"
             v-if="threeChoose.param"
+            :disabled="allDisabled"
           ></el-input>
         </el-form-item>
       </el-form-item>
@@ -233,6 +248,7 @@
             :limit="1"
             :file-list="fileFour"
             name="file"
+            :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
             <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -244,7 +260,7 @@
             @change="chooseTypes(fourChoose.type,4)"
             style="margin-right:10px;"
           >
-            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -252,6 +268,7 @@
             placeholder="请选择"
             @change="selectPage(fourChoose.selectText,4)"
             v-if="fourChoose.showSelect"
+            :disabled="allDisabled"
           >
             <el-option
               v-for="item in options"
@@ -266,6 +283,7 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入专题名称"
             @select="select4"
+            :disabled="allDisabled"
           ></el-autocomplete>
           <el-button type="primary" v-if="fourChoose.special" @click="toSpecialGuide">创建新专题</el-button>
           <el-input
@@ -273,6 +291,7 @@
             @blur="h5Path(4)"
             v-model="fourChoose.path"
             v-if="fourChoose.param"
+            :disabled="allDisabled"
           ></el-input>
         </el-form-item>
       </el-form-item>
@@ -288,6 +307,7 @@
             :limit="1"
             :file-list="fileFive"
             name="file"
+            :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
             <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -299,7 +319,7 @@
             @change="chooseTypes(fiveChoose.type,5)"
             style="margin-right:10px;"
           >
-            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -307,6 +327,7 @@
             placeholder="请选择"
             @change="selectPage(fiveChoose.selectText,5)"
             v-if="fiveChoose.showSelect"
+            :disabled="allDisabled"
           >
             <el-option
               v-for="item in options"
@@ -321,6 +342,7 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入专题名称"
             @select="select5"
+            :disabled="allDisabled"
           ></el-autocomplete>
           <el-button type="primary" v-if="fiveChoose.special" @click="toSpecialGuide">创建新专题</el-button>
           <el-input
@@ -328,6 +350,7 @@
             @blur="h5Path(5)"
             v-model="fiveChoose.path"
             v-if="fiveChoose.param"
+            :disabled="allDisabled"
           ></el-input>
         </el-form-item>
       </el-form-item>
@@ -343,6 +366,7 @@
             :limit="1"
             :file-list="fileSix"
             name="file"
+            :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
             <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -354,7 +378,7 @@
             @change="chooseTypes(sixChoose.type,6)"
             style="margin-right:10px;"
           >
-            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -362,6 +386,7 @@
             placeholder="请选择"
             @change="selectPage(sixChoose.selectText,6)"
             v-if="sixChoose.showSelect"
+            :disabled="allDisabled"
           >
             <el-option
               v-for="item in options"
@@ -376,6 +401,7 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入专题名称"
             @select="select6"
+            :disabled="allDisabled"
           ></el-autocomplete>
           <el-button type="primary" v-if="sixChoose.special" @click="toSpecialGuide">创建新专题</el-button>
           <el-input
@@ -383,6 +409,7 @@
             @blur="h5Path(6)"
             v-model="sixChoose.path"
             v-if="sixChoose.param"
+            :disabled="allDisabled"
           ></el-input>
         </el-form-item>
       </el-form-item>
@@ -398,6 +425,7 @@
             :limit="1"
             :file-list="fileSeven"
             name="file"
+            :disabled="allDisabled"
           >
             <el-button type="primary" size="mini">上传图片</el-button>
             <span slot="tip" class="el-upload__tip">只能上传1张图片</span>
@@ -409,7 +437,7 @@
             @change="chooseTypes(sevenChoose.type,7)"
             style="margin-right:10px;"
           >
-            <el-radio v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
+            <el-radio :disabled="allDisabled" v-for="(item,index) in jumpType" :label="item.name" :key="index"></el-radio>
           </el-radio-group>
           <el-select
             style="display:block"
@@ -417,6 +445,7 @@
             placeholder="请选择"
             @change="selectPage(sevenChoose.selectText,7)"
             v-if="sevenChoose.showSelect"
+            :disabled="allDisabled"
           >
             <el-option
               v-for="item in options"
@@ -431,6 +460,7 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入专题名称"
             @select="select7"
+            :disabled="allDisabled"
           ></el-autocomplete>
           <el-button type="primary" v-if="sevenChoose.special" @click="toSpecialGuide">创建新专题</el-button>
           <el-input
@@ -438,12 +468,14 @@
             @blur="h5Path(7)"
             v-model="sevenChoose.path"
             v-if="sevenChoose.param"
+            :disabled="allDisabled"
           ></el-input>
         </el-form-item>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-        <el-button @click="cancel()">取消</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')" v-if="newCreate">保存</el-button>
+        <el-button type="primary" @click="modifyForm('ruleForm')" v-if="modifySave">保存</el-button>
+        <el-button @click="cancel()" v-if="newCreate">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -451,16 +483,26 @@
 
 <script>
 import { Message } from "element-ui";
-import { checkSpecial } from "@/api/shoppingGuide";
-import { create } from "@/api/shoppingGuide";
-import { setTimeout } from "timers";
+import {
+  create,
+  guideDetails,
+  modifyGuide,
+  onlyDelayTime,
+  checkSpecial
+} from "@/api/shoppingGuide";
+import { guideAllArea } from "@/api/headerBar";
 export default {
   name: "demoTwo",
-  props: {
-    areaLists: Array
-  },
+  // props: {
+  //   areaLists: Array
+  // },
   data() {
     return {
+      newCreate: true, //新建保存
+      modifySave: false, //修改保存
+      modifyTime: false, //只可修改结束时间
+      allDisabled: false, //全部禁用
+      areaLists: [], //商圈
       timer: null,
       ruleForm: {
         showName: false, //是否名称展示
@@ -657,7 +699,216 @@ export default {
     };
   },
   methods: {
-    toSpecialGuide(){
+    allArea() {
+      guideAllArea().then(
+        res => {
+          console.log(res.data);
+          if (res.data.statusCode === 2000) {
+            this.areaLists = res.data.body;
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    },
+    fromShoppingGuide() {
+      let params = { guideId: this.guideId };
+      guideDetails(params).then(
+        res => {
+          if (res.data.statusCode === 2000) {
+            console.log(res.data);
+            this.areaLists = res.data.body.traSelectionList;
+            this.areaLists.forEach(el => {
+              if (el.checked) {
+                this.ruleForm.type.push(el.traName);
+              }
+            });
+            this.ruleForm.showName = res.data.body.guideNameDisplay
+              ? true
+              : false; //是否展示名称
+            this.ruleForm.name = res.data.body.guideName; //导购名称
+            this.ruleForm.startTime = res.data.body.startTime; //开始时间
+            this.ruleForm.endTime = res.data.body.endTime; //结束时间
+            this.oneChoose.type = res.data.body.actionList[0].actionType.toUpperCase(); //跳转页面 APP H5
+            this.twoChoose.type = res.data.body.actionList[1].actionType.toUpperCase();
+            this.threeChoose.type = res.data.body.actionList[2].actionType.toUpperCase();
+            this.fourChoose.type = res.data.body.actionList[3].actionType.toUpperCase();
+            this.fiveChoose.type = res.data.body.actionList[4].actionType.toUpperCase();
+            this.sixChoose.type = res.data.body.actionList[5].actionType.toUpperCase();
+            this.sevenChoose.type = res.data.body.actionList[6].actionType.toUpperCase();
+            //活动1
+            this.oneChoose.topicId = res.data.body.actionList[0].actionParam;
+            if (this.oneChoose.type === `APP`) {
+              //选中为APP时，显示下拉框并赋值；
+              this.oneChoose.showSelect = true;
+              if (res.data.body.actionList[0].actionContent == 16) {
+                this.oneChoose.special = true;
+                this.oneChoose.topicName =
+                  res.data.body.actionList[0].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[0].actionContent == el.value) {
+                  this.oneChoose.selectText = el.value;
+                }
+              });
+            } else {
+              //为H5时，显示输入路径框
+              this.oneChoose.param = true;
+              this.oneChoose.path = res.data.body.actionList[0].actionContent;
+            }
+            this.oneChoose.picUrl = res.data.body.actionList[0].picUrl;
+            this.fileOne.push({
+              name: this.oneChoose.picUrl,
+              value: this.oneChoose.picUrl
+            });
+            //活动2
+            this.twoChoose.topicId = res.data.body.actionList[1].actionParam;
+            if (this.twoChoose.type === `APP`) {
+              this.twoChoose.showSelect = true;
+              if (res.data.body.actionList[1].actionContent == 16) {
+                this.twoChoose.special = true;
+                this.twoChoose.topicName =
+                  res.data.body.actionList[1].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[1].actionContent == el.value) {
+                  this.twoChoose.selectText = el.value;
+                }
+              });
+            } else {
+              this.twoChoose.param = true;
+              this.twoChoose.path = res.data.body.actionList[1].actionContent;
+            }
+            this.twoChoose.picUrl = res.data.body.actionList[1].picUrl;
+            this.fileTwo.push({
+              name: this.twoChoose.picUrl,
+              value: this.twoChoose.picUrl
+            });
+            //活动3
+            this.threeChoose.topicId = res.data.body.actionList[2].actionParam;
+            if (this.threeChoose.type === `APP`) {
+              this.threeChoose.showSelect = true;
+              if (res.data.body.actionList[2].actionContent == 16) {
+                this.threeChoose.special = true;
+                this.threeChoose.topicName =
+                  res.data.body.actionList[2].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[2].actionContent == el.value) {
+                  this.threeChoose.selectText = el.value;
+                }
+              });
+            } else {
+              this.threeChoose.param = true;
+              this.threeChoose.path = res.data.body.actionList[2].actionContent;
+            }
+            this.threeChoose.picUrl = res.data.body.actionList[2].picUrl;
+            this.fileThree.push({
+              name: this.threeChoose.picUrl,
+              value: this.threeChoose.picUrl
+            });
+            //活动4
+            this.fourChoose.topicId = res.data.body.actionList[3].actionParam;
+            if (this.fourChoose.type === `APP`) {
+              this.fourChoose.showSelect = true;
+              if (res.data.body.actionList[3].actionContent == 16) {
+                this.fourChoose.special = true;
+                this.fourChoose.topicName =
+                  res.data.body.actionList[3].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[3].actionContent == el.value) {
+                  this.fourChoose.selectText = el.value;
+                }
+              });
+            } else {
+              this.fourChoose.param = true;
+              this.fourChoose.path = res.data.body.actionList[3].actionContent;
+            }
+            this.fourChoose.picUrl = res.data.body.actionList[3].picUrl;
+            this.fileFour.push({
+              name: this.fourChoose.picUrl,
+              value: this.fourChoose.picUrl
+            });
+            //活动5
+            this.fiveChoose.topicId = res.data.body.actionList[4].actionParam;
+            if (this.fiveChoose.type === `APP`) {
+              this.fiveChoose.showSelect = true;
+              if (res.data.body.actionList[4].actionContent == 16) {
+                this.fiveChoose.special = true;
+                this.fiveChoose.topicName =
+                  res.data.body.actionList[4].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[4].actionContent == el.value) {
+                  this.fiveChoose.selectText = el.value;
+                }
+              });
+            } else {
+              this.fiveChoose.param = true;
+              this.fiveChoose.path = res.data.body.actionList[4].actionContent;
+            }
+            this.fiveChoose.picUrl = res.data.body.actionList[4].picUrl;
+            this.fileFive.push({
+              name: this.fiveChoose.picUrl,
+              value: this.fiveChoose.picUrl
+            });
+            //活动6
+            this.sixChoose.topicId = res.data.body.actionList[5].actionParam;
+            if (this.sixChoose.type === `APP`) {
+              this.sixChoose.showSelect = true;
+              if (res.data.body.actionList[5].actionContent == 16) {
+                this.sixChoose.special = true;
+                this.sixChoose.topicName =
+                  res.data.body.actionList[5].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[5].actionContent == el.value) {
+                  this.sixChoose.selectText = el.value;
+                }
+              });
+            } else {
+              this.sixChoose.param = true;
+              this.sixChoose.path = res.data.body.actionList[5].actionContent;
+            }
+            this.sixChoose.picUrl = res.data.body.actionList[5].picUrl;
+            this.fileSix.push({
+              name: this.sixChoose.picUrl,
+              value: this.sixChoose.picUrl
+            });
+            //活动7
+            this.sevenChoose.topicId = res.data.body.actionList[6].actionParam;
+            if (this.sevenChoose.type === `APP`) {
+              this.sevenChoose.showSelect = true;
+              if (res.data.body.actionList[5].actionContent == 16) {
+                this.sevenChoose.special = true;
+                this.sevenChoose.topicName =
+                  res.data.body.actionList[6].actionParamName;
+              }
+              this.options.forEach(el => {
+                if (res.data.body.actionList[5].actionContent == el.value) {
+                  this.sevenChoose.selectText = el.value;
+                }
+              });
+            } else {
+              this.sevenChoose.param = true;
+              this.sevenChoose.path = res.data.body.actionList[6].actionContent;
+            }
+            this.sevenChoose.picUrl = res.data.body.actionList[6].picUrl;
+            this.fileSeven.push({
+              name: this.sevenChoose.picUrl,
+              value: this.sevenChoose.picUrl
+            });
+          } else {
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    },
+    toSpecialGuide() {
       this.$router.push("/specialinfor");
     },
     isShow() {
@@ -721,6 +972,138 @@ export default {
           return false;
         }
       });
+    },
+    //修改信息
+    modifyForm() {
+      if (this.status === `生效中`) {
+        let [endTime, guideId] = [this.ruleForm.endTime, this.guideId];
+        onlyDelayTime({ endTime, guideId }).then(
+          res => {
+            if (res.data.statusCode === 2000) {
+              this.$message({ message: `修改成功`, type: `success` });
+              setTimeout(() => {
+                this.$router.push("/shoppingGuide");
+              }, 500);
+            } else {
+              this.$message({ message: res.data.msg, type: `error` });
+            }
+          },
+          error => {}
+        );
+      } else {
+        let lists = [],
+          activity = [],
+          fanllyLists = [];
+        this.areaLists.forEach(el => {
+          lists.push({ checked: el.checked, traId: el.traId });
+        });
+        Promise.all([
+          this.checkActivityData1(),
+          this.checkActivityData2(),
+          this.checkActivityData3(),
+          this.checkActivityData4(),
+          this.checkActivityData5(),
+          this.checkActivityData6(),
+          this.checkActivityData7()
+        ])
+          .then(
+            res => {
+              console.log(res);
+              // this.fanlly=[{
+              //   actionContent:path||selectText,
+              //   actionType:type,
+              //   picUrl:picUrl,
+              //   actionParam:topicId
+              // }];
+              if (this.oneChoose.type === "APP") {
+                this.oneChoose.path = "";
+              } else {
+                this.oneChoose.selectText = "";
+                this.oneChoose.topicId = "";
+              }
+              if (this.twoChoose.type === "APP") {
+                this.twoChoose.path = "";
+              } else {
+                this.twoChoose.selectText = "";
+                this.twoChoose.topicId = "";
+              }
+              if (this.threeChoose.type === "APP") {
+                this.threeChoose.path = "";
+              } else {
+                this.threeChoose.selectText = "";
+                this.threeChoose.topicId = "";
+              }
+              if (this.fourChoose.type === "APP") {
+                this.fourChoose.path = "";
+              } else {
+                this.fourChoose.selectText = "";
+                this.fourChoose.topicId = "";
+              }
+              if (this.fiveChoose.type === "APP") {
+                this.fiveChoose.path = "";
+              } else {
+                this.fiveChoose.selectText = "";
+                this.fiveChoose.topicId = "";
+              }
+              if (this.sixChoose.type === "APP") {
+                this.sixChoose.path = "";
+              } else {
+                this.sixChoose.selectText = "";
+                this.sixChoose.topicId = "";
+              }
+              if (this.sevenChoose.type === "APP") {
+                this.sevenChoose.path = "";
+              } else {
+                this.sevenChoose.selectText = "";
+                this.sevenChoose.topicId = "";
+              }
+              activity = [
+                this.oneChoose,
+                this.twoChoose,
+                this.threeChoose,
+                this.fourChoose,
+                this.fiveChoose,
+                this.sixChoose,
+                this.sevenChoose
+              ];
+              activity.forEach(el => {
+                // console.log(el);
+                fanllyLists.push({
+                  actionType: el.type,
+                  actionContent: el.type === "APP" ? el.selectText : el.path,
+                  picUrl: el.picUrl,
+                  actionParam: el.topicId
+                });
+              });
+              console.log(fanllyLists);
+              let params = {
+                templateCode: "T2",
+                guideNameDisplay: this.ruleForm.showName ? 1 : 0, //是否名称展示
+                startTime: this.ruleForm.startTime,
+                endTime: this.ruleForm.endTime,
+                guideName: this.ruleForm.name, //导购名称
+                traSelectionList: lists, //选择的商圈
+                actionList: fanllyLists
+              };
+              console.log(params);
+              return modifyGuide(params);
+            },
+            error => {}
+          )
+          .then(
+            res => {
+              if (res.data.statusCode === 2000) {
+                this.$message({ message: `修改成功`, type: `success` });
+                setTimeout(() => {
+                  this.$router.push("/shoppingGuide");
+                }, 500);
+              } else {
+                this.$message({ message: res.data.msg, type: `error` });
+              };
+            },
+            error => {}
+          );
+      }
     },
     //提交信息
     subData() {
@@ -1458,6 +1841,34 @@ export default {
     beforeRemoveSeven(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     }
+  },
+  created() {
+    console.log(`demo2`);
+    console.log(this.$route.params);
+    if (this.$route.params.guideId) {
+      this.guideId = this.$route.params.guideId;
+      this.status = this.$route.params.status;
+      if (this.status === `未生效`) {
+        this.newCreate = false; //新创建的保存按钮
+        this.modifySave = true; //修改的保存按钮
+      } else if (this.status === `生效中`) {
+        this.newCreate = false;
+        this.modifySave = true;
+        this.allDisabled = true;
+        this.modifyTime = false;
+      } else {
+        if (this.$route.params.text) {
+        } else {
+          this.newCreate = false;
+          this.modifySave = false;
+          this.allDisabled = true;
+          this.modifyTime = true;
+        }
+      }
+      this.fromShoppingGuide();
+    } else {
+      this.allArea();
+    };
   }
 };
 </script>

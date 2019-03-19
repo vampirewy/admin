@@ -248,11 +248,8 @@
 
 <script>
 import { Message } from "element-ui";
-import { checkSpecial } from "@/api/shoppingGuide";
-import { create, guideDetails,modifyGuide,onlyDelayTime } from "@/api/shoppingGuide";
+import { create, guideDetails,modifyGuide,onlyDelayTime,checkSpecial } from "@/api/shoppingGuide";
 import { guideAllArea } from "@/api/headerBar";
-// import { setTimeout } from 'timers';
-// import { clearTimeout, setTimeout } from "timers";
 export default {
   name: "demoFive",
   // props: {
@@ -445,7 +442,7 @@ export default {
           }else{
             //为H5时，显示输入路径框
             this.oneChoose.param=true;
-            this.oneChoose.path=res.data.body.actionList[0].actionParam;
+            this.oneChoose.path=res.data.body.actionList[0].actionContent;
           };
           this.oneChoose.picUrl=res.data.body.actionList[0].picUrl;
           this.fileOne.push({name:this.oneChoose.picUrl,value:this.oneChoose.picUrl});
@@ -459,7 +456,7 @@ export default {
             });
           }else{
             this.twoChoose.param=true;
-            this.twoChoose.path=res.data.body.actionList[1].actionParam;
+            this.twoChoose.path=res.data.body.actionList[1].actionContent;
           };
           this.twoChoose.picUrl=res.data.body.actionList[1].picUrl;
           this.fileTwo.push({name:this.twoChoose.picUrl,value:this.twoChoose.picUrl});
@@ -473,7 +470,7 @@ export default {
             });
           }else{
             this.threeChoose.param=true;
-            this.threeChoose.path=res.data.body.actionList[2].actionParam;
+            this.threeChoose.path=res.data.body.actionList[2].actionContent;
           };
           this.threeChoose.picUrl=res.data.body.actionList[2].picUrl;
           this.fileThree.push({name:this.threeChoose.picUrl,value:this.threeChoose.picUrl});
@@ -686,7 +683,8 @@ export default {
             console.log(res.data);
             if (res.data.statusCode === 2000) {
               this.$message({
-                message: `创建成功`
+                message: `创建成功`,
+                type:`success`
               });
               this.$router.push("/shoppingGuide");
             } else {

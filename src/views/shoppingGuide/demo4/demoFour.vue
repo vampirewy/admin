@@ -427,7 +427,8 @@ import {
   create,
   guideDetails,
   modifyGuide,
-  onlyDelayTime
+  onlyDelayTime,
+  checkSpecial
 } from "@/api/shoppingGuide";
 import { guideAllArea } from "@/api/headerBar";
 // import { clearTimeout, setTimeout } from "timers";
@@ -669,7 +670,7 @@ export default {
           }else{
             //为H5时，显示输入路径框
             this.oneChoose.param=true;
-            this.oneChoose.path=res.data.body.actionList[0].actionParam;
+            this.oneChoose.path=res.data.body.actionList[0].actionContent;
           };
           this.oneChoose.picUrl=res.data.body.actionList[0].picUrl;
           this.fileOne.push({name:this.oneChoose.picUrl,value:this.oneChoose.picUrl});
@@ -683,7 +684,7 @@ export default {
             });
           }else{
             this.twoChoose.param=true;
-            this.twoChoose.path=res.data.body.actionList[1].actionParam;
+            this.twoChoose.path=res.data.body.actionList[1].actionContent;
           };
           this.twoChoose.picUrl=res.data.body.actionList[1].picUrl;
           this.fileTwo.push({name:this.twoChoose.picUrl,value:this.twoChoose.picUrl});
@@ -697,7 +698,7 @@ export default {
             });
           }else{
             this.threeChoose.param=true;
-            this.threeChoose.path=res.data.body.actionList[2].actionParam;
+            this.threeChoose.path=res.data.body.actionList[2].actionContent;
           };
           this.threeChoose.picUrl=res.data.body.actionList[2].picUrl;
           this.fileThree.push({name:this.threeChoose.picUrl,value:this.threeChoose.picUrl});
@@ -711,7 +712,7 @@ export default {
             });
           }else{
             this.fourChoose.param=true;
-            this.fourChoose.path=res.data.body.actionList[3].actionParam;
+            this.fourChoose.path=res.data.body.actionList[3].actionContent;
           };
           this.fourChoose.picUrl=res.data.body.actionList[3].picUrl;
           this.fileFour.push({name:this.fourChoose.picUrl,value:this.fourChoose.picUrl});
@@ -725,7 +726,7 @@ export default {
             });
           }else{
             this.fiveChoose.param=true;
-            this.fiveChoose.path=res.data.body.actionList[4].actionParam;
+            this.fiveChoose.path=res.data.body.actionList[4].actionContent;
           };
           this.fiveChoose.picUrl=res.data.body.actionList[4].picUrl;
           this.fileFive.push({name:this.fiveChoose.picUrl,value:this.fiveChoose.picUrl});
@@ -739,7 +740,7 @@ export default {
             });
           }else{
             this.sixChoose.param=true;
-            this.sixChoose.path=res.data.body.actionList[5].actionParam;
+            this.sixChoose.path=res.data.body.actionList[5].actionContent;
           };
           this.sixChoose.picUrl=res.data.body.actionList[5].picUrl;
           this.fileSix.push({name:this.sixChoose.picUrl,value:this.sixChoose.picUrl});
@@ -1017,7 +1018,8 @@ export default {
           res => {
             if (res.data.statusCode === 2000) {
               this.$message({
-                message: `创建成功`
+                message: `创建成功`,
+                type:`success`
               });
               this.$router.push("/shoppingGuide");
             } else {
