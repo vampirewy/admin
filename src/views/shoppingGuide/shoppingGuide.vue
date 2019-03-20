@@ -43,7 +43,7 @@
       <el-button size="mini" @click.native="firstPage">首页</el-button>
       <el-pagination
         background
-        layout="prev, pager, next"
+        layout="prev, pager, next,total,jumper"
         prev-text="上一页"
         next-text="下一页"
         :total="totalCount"
@@ -70,7 +70,7 @@ export default {
       input: ``,
       totalCount: null,
       totalPage: null,
-      pageSize: 20,
+      pageSize: 30,
       pageNum: 1,
       shoppingGuideLists: [],
       // allAreaName: []
