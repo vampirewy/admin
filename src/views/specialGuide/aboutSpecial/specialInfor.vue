@@ -105,7 +105,7 @@
               ></el-input>
             </div>
           </el-form-item>
-          <el-form-item label="可叠加活动" prop="redPack" class="show">
+          <el-form-item label="可叠加活动" prop="redPack" class="show" v-if="ruleForm.value!=-1">
             <el-checkbox-group v-model="ruleForm.redPack">
               <el-checkbox
                 label="红包"
@@ -304,6 +304,7 @@ export default {
       modifyTime: false,
       allDisabled: false,
       reg: /^[+]?\d*$/, //正整数
+      // noActivity:true,
       // reg: /^\d+(\.\d{1,2})?$/, //只能输入正数，小数点两位
       areaLists: [],
       headers: { sessionId: localStorage.getItem(`sessionId`) }, //图片上传的参数
@@ -499,6 +500,8 @@ export default {
                     gradiendList[4].reduceAmount;
                 }
               }
+            } else {
+              this.ruleForm.value = -1;
             }
           }
         },
@@ -579,7 +582,8 @@ export default {
         this.ruleForm.picUrl = res.body;
       } else {
         this.$message({
-          message: res.msg,type:`error`
+          message: res.msg,
+          type: `error`
         });
       }
     },
@@ -599,7 +603,8 @@ export default {
     },
     chooseActivity(activity) {
       //0为每满减 1为梯度满减
-      console.log(`选择的活动为${activity}`);
+      // console.log(`选择的活动为${activity}`);
+      activity == -1 && (this.ruleForm.redPack = false);
     },
     //提交
     submitForm(formName) {
@@ -669,35 +674,34 @@ export default {
                     cancelButtonText: "取消",
                     type: "warning"
                   }
-                )
-                  .then(() => {
-                    createActivity(params).then(
-                      res => {
-                        if (res.data.statusCode === 2000) {
-                          // sessionStorage.setItem('topicId',res.data.body.topicId);
-                          this.$router.push({
-                            name: "goods",
-                            params: { topicId: res.data.body.topicId }
-                          });
-                          this.$message({
-                            message: `信息创建成功`,
-                            type: `success`
-                          });
-                          // console.log(`数字${this.activeName}`);
-                          // this.$emit("say", this.activeName);
-                        } else {
-                          this.$message({
-                            message: res.data.msg,
-                            type: `error`
-                          });
-                        }
-                      },
-                      error => {}
-                    );
-                  })
-                  // .catch(() => {
-                  //   this.$message({ type: "info", message: "已取消删除" });
-                  // });
+                ).then(() => {
+                  createActivity(params).then(
+                    res => {
+                      if (res.data.statusCode === 2000) {
+                        // sessionStorage.setItem('topicId',res.data.body.topicId);
+                        this.$router.push({
+                          name: "goods",
+                          params: { topicId: res.data.body.topicId }
+                        });
+                        this.$message({
+                          message: `信息创建成功`,
+                          type: `success`
+                        });
+                        // console.log(`数字${this.activeName}`);
+                        // this.$emit("say", this.activeName);
+                      } else {
+                        this.$message({
+                          message: res.data.msg,
+                          type: `error`
+                        });
+                      }
+                    },
+                    error => {}
+                  );
+                });
+                // .catch(() => {
+                //   this.$message({ type: "info", message: "已取消删除" });
+                // });
               } else {
                 createActivity(params).then(
                   res => {
@@ -741,7 +745,7 @@ export default {
         });
       console.log(this.status);
       if (this.status === `生效中`) {
-        let params = { endTime: this.ruleForm.endTime,topicId:this.topicId };
+        let params = { endTime: this.ruleForm.endTime, topicId: this.topicId };
         onlyModifyTime(params).then(
           res => {
             console.log(res.data);
@@ -1150,6 +1154,7 @@ export default {
       }
     },
     sortData() {
+      console.log(this.ruleForm.value);
       let level1 = parseFloat(this.ruleForm.gradientRule1.gradientAmount),
         level2 = parseFloat(this.ruleForm.gradientRule2.gradientAmount),
         level3 = parseFloat(this.ruleForm.gradientRule3.gradientAmount),
@@ -1457,7 +1462,7 @@ export default {
       this.fromSpecialGuide(this.topicId);
     } else {
       this.allAreaName();
-    };
+    }
     console.log(this.$route.params);
   }
   // updated() {
@@ -1510,7 +1515,7 @@ export default {
 .m_b_10 {
   margin-bottom: 10px;
 }
-.m_l_10{
-  margin-left:10px;
+.m_l_10 {
+  margin-left: 10px;
 }
 </style>

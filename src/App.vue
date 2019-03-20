@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view/>
+    <img class="test" src="./img/demo1.png" alt="">
   </div>
 </template>
 
@@ -13,7 +14,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less">
 #app {
   width: 100%;
   height: 100%;
@@ -22,5 +23,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  .test{
+    display:none;
+  }
 }
 </style>

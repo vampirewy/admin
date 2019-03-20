@@ -112,7 +112,7 @@ export default {
           sonName: [
             { name: "列表", path: "/specialguide" },
             { name: "信息", path: "/specialinfor" },
-            { name: "商品", path: "/specialgood" }
+            // { name: "商品", path: "/specialgood" }
           ]
         }
       ]
