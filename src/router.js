@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-// import Home from "./views/Home.vue";
 import Layout from "./views/layout/layout.vue";
 import ShoppingGuide from "./views/shoppingGuide/shoppingGuide.vue";
 // import AddShopping from "./views/shoppingGuide/addShopping.vue";
